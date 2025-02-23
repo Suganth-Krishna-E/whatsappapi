@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+.navbar {
+    background: linear-gradient(135deg, #ffd3b6, #ffecd2);
+    padding: 14px 25px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a, div {
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    color: #5a3d2b; /* Warm brownish tone */
+    padding: 12px 20px;
+    border-radius: 8px;
+    position: relative;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar a::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background: #e48f45;
+    bottom: 5px;
+    left: 50%;
+    transition: all 0.4s ease-in-out;
+}
+
+.navbar a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+.navbar a:hover {
+    color: #d87d4a;
+}

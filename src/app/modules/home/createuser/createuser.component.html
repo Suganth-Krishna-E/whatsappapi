@@ -1,1 +1,47 @@
-<p>createuser works!</p>
+<!-- <div class="register-container">
+    <h2>User Registration</h2>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <div class="column">
+                <label>User Name</label>
+                <input type="text" formControlName="userName" placeholder="Enter your name" />
+
+                <label>User ID</label>
+                <input type="text" formControlName="userId" placeholder="Enter unique User ID" />
+
+                <label>Company Name (Optional)</label>
+                <input type="text" formControlName="companyName" placeholder="Enter company name" />
+
+                <div class="checkbox-group">
+                    <input type="checkbox" formControlName="isBusiness" />
+                    <label>Register as Business</label>
+                </div>
+
+                <label>GST Number (Required for Business)</label>
+                <input type="text" formControlName="gstNumber" placeholder="Enter GST number"
+                       [disabled]="!registerForm.controls['isBusiness'].value" />
+            </div>
+
+            <div class="column">
+                <label>Email</label>
+                <input type="email" formControlName="email" placeholder="Enter your email" />
+
+                <label>Mobile Number</label>
+                <input type="text" formControlName="mobileNumber" placeholder="Enter 10-digit mobile number" />
+
+                <label>Address</label>
+                <textarea formControlName="address" placeholder="Enter your address"></textarea>
+
+                <label>Password</label>
+                <input type="password" formControlName="password" placeholder="Enter a strong password" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Register</button>
+    </form>
+
+    <a routerLink="../login">Login</a>
+</div> -->
+
+<a routerLink="../login">Login</a>

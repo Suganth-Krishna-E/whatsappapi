@@ -1,1 +1,13 @@
-<p>adminhome works!</p>
+<div class="navbar">
+    <div class="redirections-holder">
+        <a routerLink="dashboard">Dashboard</a>
+        <a routerLink="users">Users</a>
+        <a routerLink="dashboard/id">User Dashboard</a>
+        <a routerLink="complaints">Complaints</a>
+        <a routerLink="approvepoints">Approve Points</a>
+    </div>
+    <div class="user-id-holder">
+        {{ userName }}
+    </div>
+</div>
+<router-outlet></router-outlet>

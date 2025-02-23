@@ -1,1 +1,14 @@
-<p>userhome works!</p>
+<div class="navbar">
+    <div class="redirections-holder">
+        <a routerLink="dashboard">Dashboard</a>
+        <a routerLink="usages">Usages</a>
+        <a routerLink="apiinterface">API Interface</a>
+        <a routerLink="getpoints">Get Points</a>
+        <a routerLink="registerwhatsapp">Register Whatsapp</a>
+        <a routerLink="complaint">Complaint</a>
+    </div>
+    <div class="user-id-holder">
+        {{ userName }}
+    </div>
+</div>
+<router-outlet></router-outlet>
