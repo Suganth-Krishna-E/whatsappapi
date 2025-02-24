@@ -8,6 +8,8 @@ import { GetpointsComponent } from './getpoints/getpoints.component';
 import { RegisterwhatsappComponent } from './registerwhatsapp/registerwhatsapp.component';
 import { UsagesComponent } from './usages/usages.component';
 import { UserhomeComponent } from './userhome/userhome.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { UserhomeComponent } from './userhome/userhome.component';
   ],
   imports: [
     CommonModule,
-    UserRoutingModule
+    UserRoutingModule, 
+    ReactiveFormsModule,
+    RouterOutlet
   ],
   exports: [
     ApiinterfaceComponent,
