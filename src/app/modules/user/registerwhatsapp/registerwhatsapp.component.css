@@ -1,0 +1,31 @@
+.register-whatsapp-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    padding: 1rem 2rem;
+    background: #FF9966;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: 0.3s;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: #FF5733;
+    transform: scale(1.05);
+}

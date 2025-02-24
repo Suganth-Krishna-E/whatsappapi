@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WhatsappService } from '../services/whatsapp.service';
 import { LoggeduserService } from '../services/loggeduser.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registerwhatsapp',
@@ -34,13 +35,17 @@ export class RegisterwhatsappComponent implements OnInit {
     // Subscribe to WhatsApp status updates
     this.whatsappService.getStatusObservable().subscribe(status => {
       if (status) {
-        console.log("Status:", status);
         this.formGroup.controls['statusOfQr'].setValue(status);
       }
     });
   }
 
   generateQR() {
+    if (!this.userId) {
+      Swal.fire("Error", "User ID is missing.", "error");
+      return;
+    }
+
     this.whatsappService.generateQR(this.userId);
   }
 }

@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,10 +11,10 @@ export class WhatsappService {
   private qrCodeSubject = new BehaviorSubject<string | null>(null);
   private statusSubject = new BehaviorSubject<string | null>(null);
   private reconnectAttempts = 0;
-  private readonly maxReconnectAttempts = 5;
+  private readonly maxReconnectAttempts = 0;
 
-  private readonly wsUrl = 'ws://localhost:5005'; // ✅ WebSocket for real-time updates
-  private readonly apiUrl = 'http://localhost:5004/api/whatsapp/generateQR'; // ✅ Spring Boot API
+  private readonly wsUrl = 'ws://localhost:5005'; 
+  private readonly apiUrl = 'http://localhost:5004/api/whatsapp/generateQR';
 
   constructor(private http: HttpClient) {
     this.connectWebSocket();
@@ -37,24 +38,34 @@ export class WhatsappService {
       this.socket.onclose = () => this.handleReconnect();
     }
   }
-
+  
   /**
-   * Generate QR Code for WhatsApp Login (Calls Spring Boot)
+   * Generate QR Code for WhatsApp Registration
    */
   generateQR(userId: string | null) {
     if (!userId) {
-      console.error("User ID is missing.");
+      Swal.fire("Error", "User ID is missing.", "error");
       return;
     }
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post(this.apiUrl, { userId }, { headers }).subscribe(
-      response => {
+    this.http.post(this.apiUrl, { userId }, { headers }).subscribe(
+      (response: any) => {
         console.log("QR Code request sent:", response);
+        Swal.fire("QR Code Generated", "Scan the QR code to log in.", "info");
       },
       error => {
         console.error("Error generating QR Code:", error);
+        if (error.status === 409) {
+          Swal.fire("Warning", "User is already registered with WhatsApp.", "warning");
+        } 
+        else if (error.status === 400) {
+          Swal.fire("Warning", "User is already registered with WhatsApp.", "warning");
+        }
+        else {
+          Swal.fire("Error", "Failed to generate QR Code. Try again later.", "error");
+        }
       }
     );
   }
@@ -71,6 +82,9 @@ export class WhatsappService {
         this.qrCodeSubject.next(message.qrCode);
       } else if (message.type === "REGISTRATION_SUCCESS") {
         this.statusSubject.next(message.message);
+        Swal.fire("Success", message.message, "success");
+      } else if (message.type === "REGISTRATION_FAILED") {
+        Swal.fire("Error", message.message, "error");
       }
     } catch (error) {
       console.error("Error parsing WebSocket message:", error);
@@ -86,7 +100,7 @@ export class WhatsappService {
       console.log(`Reconnecting WebSocket... Attempt ${this.reconnectAttempts}`);
       setTimeout(() => this.connectWebSocket(), 2000);
     } else {
-      console.error("Max WebSocket reconnect attempts reached.");
+      Swal.fire("Error", "Failed to reconnect WebSocket after multiple attempts.", "error");
     }
   }
 

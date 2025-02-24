@@ -39,3 +39,49 @@
 .navbar a:hover {
     color: #d87d4a;
 }
+
+.button {
+    background-color: #007bff; /* Primary Blue */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3; /* Darker Shade for Hover */
+    box-shadow: 0px 4px 10px rgba(0, 91, 187, 0.3);
+}
+
+.button:active {
+    background-color: #004494; /* Even Darker for Click */
+    box-shadow: 0px 2px 5px rgba(0, 91, 187, 0.5);
+}
+
+.button.secondary {
+    background-color: #6c757d; /* Secondary Gray */
+}
+
+.button.secondary:hover {
+    background-color: #565e64;
+}
+
+.button.success {
+    background-color: #28a745; /* Success Green */
+}
+
+.button.success:hover {
+    background-color: #218838;
+}
+
+.button.danger {
+    background-color: #dc3545; /* Danger Red */
+}
+
+.button.danger:hover {
+    background-color: #c82333;
+}
