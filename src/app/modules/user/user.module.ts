@@ -10,6 +10,8 @@ import { UsagesComponent } from './usages/usages.component';
 import { UserhomeComponent } from './userhome/userhome.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
@@ -19,13 +21,14 @@ import { RouterOutlet } from '@angular/router';
     GetpointsComponent,
     RegisterwhatsappComponent,
     UsagesComponent,
-    UserhomeComponent
+    UserhomeComponent,
   ],
   imports: [
     CommonModule,
     UserRoutingModule, 
     ReactiveFormsModule,
-    RouterOutlet
+    RouterOutlet,
+    HttpClientModule
   ],
   exports: [
     ApiinterfaceComponent,

@@ -1,18 +1,17 @@
 <div class="register-whatsapp-container">
-    <h2>Register WhatsApp</h2>
-  
-    <form [formGroup]="formGroup">
-      <button type="button" (click)="generateQR()">Generate QR Code</button>
-  
-      <div class="qr-container" *ngIf="formGroup.controls['qrCode'].value">
-        <h3>Scan the QR Code</h3>
-        <img [src]="formGroup.controls['qrCode'].value" alt="WhatsApp QR Code" />
-      </div>
-  
-      <div class="status-container" *ngIf="formGroup.controls['statusOfQr'].value">
-        <h3>Status:</h3>
-        <p>{{ formGroup.controls['statusOfQr'].value }}</p>
-      </div>
-    </form>
-  </div>
-  
+  <h2>Register WhatsApp</h2>
+
+  <form [formGroup]="formGroup">
+    <button type="button" (click)="generateQR()">Generate QR Code</button>
+
+    <div class="qr-container" *ngIf="formGroup.controls['qrCode'].value">
+      <h3>Scan the QR Code</h3>
+      <img [src]="formGroup.controls['qrCode'].value" alt="WhatsApp QR Code" />
+    </div>
+
+    <div class="status-container" *ngIf="formGroup.controls['statusOfQr'].value">
+      <h3>Status:</h3>
+      <p>{{ formGroup.controls['statusOfQr'].value }}</p>
+    </div>
+  </form>
+</div>
