@@ -60,11 +60,11 @@ export class WhatsappService {
         if (error.status === 409) {
           Swal.fire("Warning", "User is already registered with WhatsApp.", "warning");
         } 
-        else if (error.status === 400) {
-          Swal.fire("Warning", "User is already registered with WhatsApp.", "warning");
+        else if (error.status === 200) {
+          Swal.fire("Sucess", "Session saved to DB sucessfully", "success");
         }
         else {
-          Swal.fire("Error", "Failed to generate QR Code. Try again later.", "error");
+          Swal.fire("Warning", error.message, "warning");
         }
       }
     );
