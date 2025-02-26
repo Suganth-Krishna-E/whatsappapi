@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { WhatsappService } from '../services/whatsapp.service';
 import { LoggeduserService } from '../services/loggeduser.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registerwhatsapp',
@@ -19,23 +20,25 @@ export class RegisterwhatsappComponent implements OnInit {
 
   constructor(
     private whatsappService: WhatsappService,
-    private loggedUserService: LoggeduserService
+    private loggedUserService: LoggeduserService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.userId = this.loggedUserService.getUserId();
 
-    // Subscribe to QR Code updates
     this.whatsappService.getQRCodeObservable().subscribe(qr => {
       if (qr) {
         this.formGroup.controls['qrCode'].setValue(qr);
       }
     });
-
-    // Subscribe to WhatsApp status updates
+    
     this.whatsappService.getStatusObservable().subscribe(status => {
       if (status) {
         this.formGroup.controls['statusOfQr'].setValue(status);
+        if(this.formGroup.controls['statusOfQr'].value === "WhatsApp registered successfully!") {
+          this.router.navigate(['/']);
+        }
       }
     });
   }
@@ -46,6 +49,11 @@ export class RegisterwhatsappComponent implements OnInit {
       return;
     }
 
-    this.whatsappService.generateQR(this.userId);
+    try {
+      this.whatsappService.generateQR(this.userId);
+    }
+    catch(error) {
+      Swal.fire("Error", "Error while getting QR from BackEnd", "error");
+    }
   }
 }

@@ -1,1 +1,29 @@
-<p>usages works!</p>
+<div *ngIf="messages.length > 0">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Recipient</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Status Message</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let message of messages" [ngClass]="{'error-status': isErrorStatus(message.status)}">
+                <td>{{ message?.id }}</td>
+                <td>{{ message?.recipient }}</td>
+                <td>{{ message?.message }}</td>
+                <td>{{ message?.status }}</td>
+                <td>{{ message?.statusMessage }}</td>
+                <td>{{ message?.timestamp }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+    <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+</div>
+
+<p *ngIf="messages?.length === 0">No messages found.</p>

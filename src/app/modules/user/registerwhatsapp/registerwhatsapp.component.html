@@ -3,7 +3,7 @@
 
   <form [formGroup]="formGroup">
     <button type="button" (click)="generateQR()">Generate QR Code</button>
-
+    
     <div class="qr-container" *ngIf="formGroup.controls['qrCode'].value">
       <h3>Scan the QR Code</h3>
       <img [src]="formGroup.controls['qrCode'].value" alt="WhatsApp QR Code" />
