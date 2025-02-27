@@ -27,17 +27,23 @@ export class WhatsappService {
 
 
   connectWebSocket() {
-    if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
-      this.socket = new WebSocket(this.wsUrl);
-
-      this.socket.onopen = () => {
-        this.reconnectAttempts = 0;
-      };
-
-      this.socket.onmessage = (event) => this.handleMessage(event.data);
-      this.socket.onerror = (error) => this.handleError(error);
-      this.socket.onclose = () => this.handleReconnect();
+    try {
+      if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
+        this.socket = new WebSocket(this.wsUrl);
+  
+        this.socket.onopen = () => {
+          this.reconnectAttempts = 0;
+        };
+  
+        this.socket.onmessage = (event) => this.handleMessage(event.data);
+        this.socket.onerror = (error) => this.handleError(error);
+        this.socket.onclose = () => this.handleReconnect();
+      }
     }
+    catch(error) {
+      Swal.fire("Web Socket Error", "The connection to websocket failed please contact administrator", "warning")
+    }
+    
   }
 
   generateQR(userId: string | null) {
@@ -65,14 +71,11 @@ export class WhatsappService {
               cancelButtonText: 'No, continue',
             }).then((result) => {
               if (result.isConfirmed) {
-                console.log("Delete called");
                 this.http.post(this.deleteSessionUrl, { userId }, { headers }).subscribe(
                   (response: any) => {
-                    console.log(response);
                     this.generateQR(userId);
                   },
                   error => {
-                    console.log(error);
                   }
                 );
               }
@@ -104,7 +107,6 @@ export class WhatsappService {
         this.qrCodeSubject.next(message.qrCode);
       } else if (message.type === "REGISTRATION_SUCCESS") {
         this.statusSubject.next(message.message);
-        console.log(message);
         Swal.fire("Success", message.message, "success");
       } else if (message.type === "REGISTRATION_FAILED") {
         Swal.fire("Error", message.message, "error");

@@ -36,17 +36,14 @@ export class UsagesComponent {
   fetchMessages() {
     this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
       (response: any) => {
-        console.log(response);
         this.totalPages = response || 1;
       }
     );
     this.messageService.getMessagesByUser(this.userId, this.page, this.size).subscribe(
       (response: any) => {
-        console.log("Response:", response);  
         this.messages = response || []; 
       },
       (error) => {
-        console.log("Error fetching messages:", error);
         this.messages = []; 
       }
     );

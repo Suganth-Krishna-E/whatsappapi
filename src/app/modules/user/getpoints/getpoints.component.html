@@ -1,1 +1,8 @@
 <p>getpoints works!</p>
+<button type="button" (click)="requestPoints()">Click to get points</button>
+
+<div *ngIf="qrCode">
+    <h3>Scan this QR to Pay</h3>
+    <img [src]="qrCode" alt="QR Code">
+  </div>
+  

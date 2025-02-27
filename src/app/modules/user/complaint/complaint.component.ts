@@ -54,17 +54,14 @@ export class ComplaintComponent {
   fetchComplaints() {
     this.complaintService.getTotalPagesCount(this.userId, this.size).subscribe(
       (response: any) => {
-        console.log(response);
         this.totalPages = response || 1;
       }
     );
     this.complaintService.getAllComplaintsByUserId(this.userId, this.page, this.size).subscribe(
       (response: any) => {
-        console.log("Response:", response);  
         this.complaints = response || []; 
       },
       (error) => {
-        console.log("Error fetching messages:", error);
         this.complaints = []; 
       }
     );
@@ -74,7 +71,6 @@ export class ComplaintComponent {
   submitComplaint() {
     if (this.complaintForm.valid) {
       this.complaintForm.controls['userId'].setValue(this.loggedUserService.getUserId());
-      console.log(this.complaintForm.value);
       this.complaintService.registerComplaint(this.complaintForm.value).subscribe(
         () => {
           Swal.fire('Success', 'Complaint registered successfully!', 'success');
@@ -93,7 +89,6 @@ export class ComplaintComponent {
           else {
             Swal.fire('Error', 'Failed to register complaint', 'error');
           }
-          console.error(error);
         }
       );
     }
