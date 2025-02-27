@@ -2,7 +2,6 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Recipient</th>
                 <th>Message</th>
                 <th>Status</th>
@@ -12,14 +11,13 @@
         </thead>
         <tbody>
             <tr *ngFor="let message of messages">
-                <td>{{ message?.id }}</td>
                 <td>{{ message?.recipient }}</td>
                 <td>{{ message?.message }}</td>
                 <td [ngClass]="isErrorStatus(message.status)">
                     {{ message?.status }}
                 </td>
                 <td>{{ message?.statusMessage }}</td>
-                <td>{{ message?.timestamp }}</td>
+                <td>{{ formatTime(message.timestamp) }}</td>
             </tr>
         </tbody>
     </table>

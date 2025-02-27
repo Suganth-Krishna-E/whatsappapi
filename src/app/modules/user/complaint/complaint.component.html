@@ -1,25 +1,47 @@
-<div *ngIf="complaints.length > 0" class="complaints-container">
+<div class="view-selector">
+    <button type="button" (click)="changeToRegisterComplaint()">Register Complaint</button>
+    <button type="button" (click)="changeToViewComplaints()">View Complaints</button>
+</div>
+
+<div class="complaint-registration" *ngIf="viewSelector === 'register'">
+    <h2>Register a Complaint</h2>
+    <form [formGroup]="complaintForm" (ngSubmit)="submitComplaint()">
+        <label for="category">Category:</label>
+        <select id="category" formControlName="category" required>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+
+        <label for="message">Message:</label>
+        <textarea appTextAreaResize id="message" formControlName="message" required></textarea>
+
+        <button type="submit" [disabled]="complaintForm.invalid">Submit</button>
+    </form>
+</div>
+
+
+<div *ngIf="complaints.length > 0 && viewSelector === 'view'" class="complaints-container">
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Category</th>
                 <th>Status</th>
-                <th>Status</th>
-                <th>Status Message</th>
-                <th>Timestamp</th>
+                <th>Message</th>
+                <th>Admin Message</th>
+                <th>Registered Timestamp</th>
+                <th>Resolved Timestamp</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let message of messages">
-                <td>{{ message?.id }}</td>
-                <td>{{ message?.recipient }}</td>
-                <td>{{ message?.message }}</td>
-                <td [ngClass]="isErrorStatus(message.status)">
-                    {{ message?.status }}
+            <tr *ngFor="let complaint of complaints">
+                <td>{{ complaint?.category }}</td>
+                <td [ngClass]="resolvedStatus(complaint.status)">
+                    {{ complaint?.status }}
                 </td>
-                <td>{{ message?.statusMessage }}</td>
-                <td>{{ message?.timestamp }}</td>
+
+                <td>{{ complaint?.message }}</td>
+                <td>{{ complaint?.adminMessage }}</td>
+                <td>{{ formatTime(complaint.registeredTimestamp) }}</td>
+                <td>{{ formatTime(complaint.resolvedTimestamp) }}</td>
             </tr>
         </tbody>
     </table>
@@ -30,4 +52,4 @@
     </div>
 </div>
 
-<p *ngIf="messages?.length === 0" class="no-messages">No messages found.</p>
+<p *ngIf="complaints?.length === 0" class="no-messages">No complaints found.</p>

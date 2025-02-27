@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MessageServiceService {
-  private baseUrl = 'http://localhost:5004/api/whatsapp/getAllMessagesByUserId';
+  private baseUrl = 'http://localhost:5004/api/whatsapp/message/getAllMessagesByUserId';
 
   constructor(private http: HttpClient) {}
 
@@ -16,6 +16,6 @@ export class MessageServiceService {
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`http://localhost:5004/api/whatsapp/getTotalPageCount/${userId}?size=${size}`);
+    return this.http.get(`http://localhost:5004/api/whatsapp/message/getTotalPageCount/${userId}?size=${size}`);
   }
 }

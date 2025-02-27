@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { BrowserModule } from '@angular/platform-browser';
     RegisterwhatsappComponent,
     UsagesComponent,
     UserhomeComponent,
+    TextAreaResizeDirective
   ],
   imports: [
     CommonModule,

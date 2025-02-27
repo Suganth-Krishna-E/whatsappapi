@@ -52,6 +52,15 @@ export class UsagesComponent {
     );
   }
 
+  formatTime(timestampOrNull: string | null): String {
+    if(timestampOrNull !== null) {
+      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;  
+    }
+    else {
+      return "No time found";
+    }
+  }
+
   nextPage() {
     if (this.page < this.totalPages - 1) {
       this.page++;

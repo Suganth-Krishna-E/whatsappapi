@@ -1,20 +1,31 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComplaintService {
 
-  private basrUrl = "http://localhost:5004/api/whatsapp/"
+  private baseUrl = "http://localhost:5004/api/whatsapp/complaint/"
+
+  private categories: string[] = ['Messages', 'Points', 'Registration'];
 
   constructor(private http: HttpClient) { }
 
   getAllComplaintsByUserId(userId: String | null, page: number, size: number) {
-    return this.http.get(`${this.basrUrl}getComplaintsByUserId/${userId}?page=${page}&size=${size}`);
+    return this.http.get(`${this.baseUrl}getComplaintsByUserId/${userId}?page=${page}&size=${size}`);
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`${this.basrUrl}getTotalPageCount/${userId}?size=${size}`);
+    return this.http.get(`${this.baseUrl}getTotalPageCount/${userId}?size=${size}`);
+  }
+
+  registerComplaint(complaint: { category: string; message: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}registerComplaint`, complaint);
+  }
+
+  getCategories(): string[] {
+    return this.categories;
   }
 }
