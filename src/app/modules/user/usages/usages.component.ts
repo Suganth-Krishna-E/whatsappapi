@@ -13,7 +13,7 @@ export class UsagesComponent {
   messages: Message[] = [];  // Ensures it's always an array
   userId: string | null = null;
   page = 0;
-  size = 2;
+  size = 5;
   totalPages = 0;
 
   constructor(
@@ -34,12 +34,16 @@ export class UsagesComponent {
   }
 
   fetchMessages() {
+    this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.totalPages = response || 1;
+      }
+    );
     this.messageService.getMessagesByUser(this.userId, this.page, this.size).subscribe(
       (response: any) => {
         console.log("Response:", response);  
         this.messages = response || []; 
-        this.page = 1;
-        this.totalPages = response?.totalPages || 1; 
       },
       (error) => {
         console.log("Error fetching messages:", error);
@@ -62,8 +66,8 @@ export class UsagesComponent {
     }
   }
 
-  isErrorStatus(status: string): boolean {
-    return status?.toLowerCase() === 'error' || status?.toLowerCase() === 'failed';
+  isErrorStatus(status: string): string {
+    return status?.toLowerCase() === 'failed'? "error" : "success";
   }
 }
 

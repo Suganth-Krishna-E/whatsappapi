@@ -7,10 +7,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MessageServiceService {
-  getTotalMessagesCount(userId: string | null) {
-    throw new Error('Method not implemented.');
-  }
-
   private baseUrl = 'http://localhost:5004/api/whatsapp/getAllMessagesByUserId';
 
   constructor(private http: HttpClient) {}

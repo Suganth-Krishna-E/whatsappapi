@@ -1,1 +1,33 @@
-<p>complaint works!</p>
+<div *ngIf="complaints.length > 0" class="complaints-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Status</th>
+                <th>Status Message</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let message of messages">
+                <td>{{ message?.id }}</td>
+                <td>{{ message?.recipient }}</td>
+                <td>{{ message?.message }}</td>
+                <td [ngClass]="isErrorStatus(message.status)">
+                    {{ message?.status }}
+                </td>
+                <td>{{ message?.statusMessage }}</td>
+                <td>{{ message?.timestamp }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+        <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+    </div>
+</div>
+
+<p *ngIf="messages?.length === 0" class="no-messages">No messages found.</p>

@@ -1,4 +1,4 @@
-<div *ngIf="messages.length > 0">
+<div *ngIf="messages.length > 0" class="messages-container">
     <table>
         <thead>
             <tr>
@@ -11,19 +11,23 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let message of messages" [ngClass]="{'error-status': isErrorStatus(message.status)}">
+            <tr *ngFor="let message of messages">
                 <td>{{ message?.id }}</td>
                 <td>{{ message?.recipient }}</td>
                 <td>{{ message?.message }}</td>
-                <td>{{ message?.status }}</td>
+                <td [ngClass]="isErrorStatus(message.status)">
+                    {{ message?.status }}
+                </td>
                 <td>{{ message?.statusMessage }}</td>
                 <td>{{ message?.timestamp }}</td>
             </tr>
         </tbody>
     </table>
 
-    <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
-    <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+    <div class="pagination">
+        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+        <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+    </div>
 </div>
 
-<p *ngIf="messages?.length === 0">No messages found.</p>
+<p *ngIf="messages?.length === 0" class="no-messages">No messages found.</p>
