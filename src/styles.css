@@ -41,37 +41,37 @@
 }
 
 .button {
-    background-color: #007bff; /* Primary Blue */
+    background-color: #FF9966;
     color: white;
     font-size: 16px;
     font-weight: bold;
-    padding: 12px 20px;
+    padding: 0.8rem 1.2rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .button:hover {
-    background-color: #0056b3; /* Darker Shade for Hover */
+    background-color: #FF5733; 
     box-shadow: 0px 4px 10px rgba(0, 91, 187, 0.3);
 }
 
 .button:active {
-    background-color: #004494; /* Even Darker for Click */
+    background-color: #FF9966; 
     box-shadow: 0px 2px 5px rgba(0, 91, 187, 0.5);
 }
 
 .button.secondary {
-    background-color: #6c757d; /* Secondary Gray */
+    background-color: #FF9966; 
 }
 
 .button.secondary:hover {
-    background-color: #565e64;
+    background-color: #FF5733;
 }
 
 .button.success {
-    background-color: #28a745; /* Success Green */
+    background-color: #28a745;
 }
 
 .button.success:hover {
@@ -79,9 +79,57 @@
 }
 
 .button.danger {
-    background-color: #dc3545; /* Danger Red */
+    background-color: #dc3545; 
 }
 
 .button.danger:hover {
     background-color: #c82333;
 }
+
+button {
+    padding: 1rem 2rem;
+    background: #FF9966;
+    color: white;
+    text-decoration: none;
+    border-radius: 1rem;
+    transition: 0.3s;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background: #FF5733;
+    transform: scale(1.05);
+}
+ 
+input[type="radio"] {
+    appearance: none;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin: 0 10px;
+    vertical-align: middle;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+}
+ 
+input[type="radio"]:checked {
+    background-color: white;
+    border-color: black;
+}
+ 
+input[type="radio"]:checked::before {
+    content: "";
+    width: 0.8rem;
+    height: 0.8rem;
+    background-color: #FF9966;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+

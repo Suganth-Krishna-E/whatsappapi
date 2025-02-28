@@ -1,11 +1,54 @@
-<p>getpoints works!</p>
-<button type="button" (click)="requestPoints()">Click to get points</button>
-
-<div *ngIf="qrCode">
-  <h3>Scan this QR to Pay</h3>
-  <img [src]="qrCode" alt="QR Code">
+<div class="main-container">
+  <div class="points-number-container" [formGroup]="pointsFormGroup">
+    <div class="points-button-container" *ngIf="underPayment === false">
+      <input class="point-value" type="number" placeholder="Enter number of points" formControlName="point"> 
+      <button type="button" (click)="requestQr()" *ngIf="paymentType === 'upi'">Get QR</button>
+      <button type="button" (click)="requestPoints()" *ngIf="paymentType === 'manual'">Request points</button>
+    </div>
+    <div class="payment-mode-selector" *ngIf="!underPayment">
+      <input type="radio" name="paymenttype" formControlName="paymenttype" id="manualmode" value="manual"><label for="manualmode">Manual</label>
+      <input type="radio" name="paymenttype" formControlName="paymenttype" id="upimode" value="upi"><label for="upimode">UPI</label>
+    </div>
+  </div>
+  
+  
+  <div *ngIf="qrCode" class="qrcode-container">
+    <img [src]="qrCode" alt="QR Code">
+  </div>  
 </div>
 
-<div>
+<div *ngIf="requests.length > 0 && paymentType === 'manual'" class="requests-container">
+  <table>
+      <thead>
+          <tr>
+              <th>Number od Points</th>
+              <th>Requested Timestamp</th>
+              <th>Status</th>
+              <th>Message</th>
+              <th>Allocated By</th>
+              <th>Allocated Timestamp</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let request of requests">
+              <td>{{ request?.pointsRequested }}</td>
+              <td>{{ formatTime(request.requestedOn) }}</td>
+              <td [ngClass]="request.status.toLowerCase()">
+                  {{ request?.status }}
+              </td>
+              <td>{{ request?.message }}</td>
+              <td>{{ request?.alloatedBy }}</td>
+              <td>{{ formatTime(request.allocatedOn) }}</td>
+          </tr>
+      </tbody>
+  </table>
+
+  <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+      <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+  </div>
+</div>
+
+<div class="payment-status" *ngIf="underPayment === true">
   {{ paymentStatus }}
 </div>

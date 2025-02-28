@@ -9,15 +9,18 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PointsService {
   private socket: WebSocket | null = null;
-  private statusSubject = new BehaviorSubject<string | null>(null);
+  statusSubject = new BehaviorSubject<string | null>(null);
   private orderId: String | null = null;
   private baseUrl = 'http://localhost:5004/api/whatsapp/points/';
+  private pointRequestUrl = 'http://localhost:5004/api/whatsapp/pointrequest/';
   private readonly wsUrl = 'ws://localhost:5007';
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 0;
+  
 
   constructor(private http: HttpClient, private loggedUserService: LoggeduserService) {
     this.connectWebSocket();
+
   }
 
   connectWebSocket() {
@@ -42,7 +45,31 @@ export class PointsService {
 
 
   requestQr(points: Number) {
-    return this.http.post<QrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points });;
+    return this.http.post<QrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points });
+  }
+
+  getTotalPagesCount(userId: String | null, size: number) {
+    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${userId}?size=${size}`);
+  }
+
+  getAllRequestsByUserId(userId: String | null, page: number, size: number) {
+    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/${userId}?page=${page}&size=${size}`);
+  }
+
+  requestPoints(points: number): String {
+    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points}).subscribe(
+      (error: any) => {
+        if(error.status === 410) {
+          Swal.fire("Error", "User not available", "error");
+          return "User not avilable";
+        }
+        else{
+          Swal.fire("Error", error.message, "error");
+          return error.message;
+        }
+      }
+    );
+    return "Request placed";
   }
 
   setOrderId(orderId: String | null) {
@@ -56,7 +83,6 @@ export class PointsService {
   private handleMessage(data: string) {
       try {
         const message = JSON.parse(data);
-  
         if (message.type === "SUCCESS" && message.orderId === this.orderId) {
           this.statusSubject.next("SUCCESS");
           Swal.fire("Success", "The payment is successful and points added to your account", "success");
@@ -105,3 +131,4 @@ interface QrCodeData {
   order_id: string;
   qr_code_url: string;
 }
+
