@@ -10,8 +10,17 @@ import { error } from 'console';
 export class GetpointsComponent {
   qrCode: String | null = null;
   orderId: String | null = null;
+  paymentStatus: String | null = null;
 
-  constructor(private pointService: PointsService) {}
+  constructor(private pointService: PointsService) {
+    this.pointService.getStatusObservable().subscribe(status => {
+      if (status) {
+        this.paymentStatus = status;
+      }
+    });
+  }
+
+  
 
   requestPoints() {
     this.pointService.requestQr(50).subscribe(
@@ -19,6 +28,7 @@ export class GetpointsComponent {
         console.log(response);
         this.qrCode = response.qr_code_url;
         this.orderId = response.order_id;
+        this.pointService.setOrderId(this.orderId);
       },
       (error) => {
         console.log(error);
@@ -26,21 +36,21 @@ export class GetpointsComponent {
     );
   }
 
-  // checkPaymentStatus(orderId: string) {
-  //   this.pointService.getPaymentStatus(this.orderId).subscribe(
-  //     (response: any) => {
-  //       console.log('Payment Status:', response);
-  //       if (response.status === 'captured') {
-  //         alert('Payment Successful! Points Added.');
-  //       } else {
-  //         alert('Payment Pending or Failed.');
-  //       }
-  //     },
-  //     (error) => {
-  //       console.log('Error checking payment status:', error);
-  //     }
-  //   );
-  // }
+  checkPaymentStatus() {
+    this.pointService.getPaymentStatus(this.orderId).subscribe(
+      (response: any) => {
+        console.log('Payment Status:', response);
+        if (response.status === 'captured') {
+          alert('Payment Successful! Points Added.');
+        } else {
+          alert('Payment Pending or Failed.');
+        }
+      },
+      (error) => {
+        console.log('Error checking payment status:', error);
+      }
+    );
+  }
   
 }
 
