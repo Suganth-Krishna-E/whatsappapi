@@ -16,32 +16,30 @@ export class PointsService {
   private readonly wsUrl = 'ws://localhost:5007';
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 0;
-  
+
 
   constructor(private http: HttpClient, private loggedUserService: LoggeduserService) {
     this.connectWebSocket();
-
   }
 
   connectWebSocket() {
-      try {
-        if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
-          this.socket = new WebSocket(this.wsUrl);
-    
-          this.socket.onopen = () => {
-            this.reconnectAttempts = 0;
-          };
-    
-          this.socket.onmessage = (event) => this.handleMessage(event.data);
-          this.socket.onerror = (error) => this.handleError(error);
-          this.socket.onclose = () => this.handleReconnect();
-        }
+    try {
+      if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
+        this.socket = new WebSocket(this.wsUrl);
+
+        this.socket.onopen = () => {
+          this.reconnectAttempts = 0;
+        };
+
+        this.socket.onmessage = (event) => this.handleMessage(event.data);
+        this.socket.onerror = (error) => this.handleError(error);
+        this.socket.onclose = () => this.handleReconnect();
       }
-      catch(error) {
-        Swal.fire("Web Socket Error", "The connection to websocket failed please contact administrator", "warning")
-      }
-      
     }
+    catch (error) {
+      Swal.fire("Web Socket Error", "The connection to websocket failed please contact administrator", "warning")
+    }
+  }
 
 
   requestQr(points: Number) {
@@ -57,13 +55,13 @@ export class PointsService {
   }
 
   requestPoints(points: number): String {
-    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points}).subscribe(
+    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points }).subscribe(
       (error: any) => {
-        if(error.status === 410) {
+        if (error.status === 410) {
           Swal.fire("Error", "User not available", "error");
           return "User not avilable";
         }
-        else{
+        else {
           Swal.fire("Error", error.message, "error");
           return error.message;
         }
@@ -81,36 +79,36 @@ export class PointsService {
   }
 
   private handleMessage(data: string) {
-      try {
-        const message = JSON.parse(data);
-        if (message.type === "SUCCESS" && message.orderId === this.orderId) {
-          this.statusSubject.next("SUCCESS");
-          Swal.fire("Success", "The payment is successful and points added to your account", "success");
-        } else if (message.type === "FAILED"  && message.orderId === this.orderId) {
-          this.statusSubject.next("FAILED");
-          Swal.fire("Failed", "Payment failed please retry", "warning");
-        }
-      } catch (error: any) {
-        Swal.fire("Error", error, "error");
+    try {
+      const message = JSON.parse(data);
+      if (message.type === "SUCCESS" && message.orderId === this.orderId) {
+        this.statusSubject.next("SUCCESS");
+        Swal.fire("Success", "The payment is successful and points added to your account", "success");
+      } else if (message.type === "FAILED" && message.orderId === this.orderId) {
+        this.statusSubject.next("FAILED");
+        Swal.fire("Failed", "Payment failed please retry", "warning");
       }
+    } catch (error: any) {
+      Swal.fire("Error", error, "error");
     }
-  
-    private handleReconnect() {
-      if (this.reconnectAttempts < this.maxReconnectAttempts) {
-        this.reconnectAttempts++;
-        setTimeout(() => this.connectWebSocket(), 2000);
-      } else {
-        Swal.fire("Error", "Failed to reconnect WebSocket after multiple attempts.", "error");
-      }
-    }
-  
-    private handleError(error: any) {
-      this.handleReconnect();
-    }
+  }
 
-    getStatusObservable() {
-      return this.statusSubject.asObservable();
+  private handleReconnect() {
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.reconnectAttempts++;
+      setTimeout(() => this.connectWebSocket(), 2000);
+    } else {
+      Swal.fire("Error", "Failed to reconnect WebSocket after multiple attempts.", "error");
     }
+  }
+
+  private handleError(error: any) {
+    this.handleReconnect();
+  }
+
+  getStatusObservable() {
+    return this.statusSubject.asObservable();
+  }
 }
 
 interface Payment {

@@ -1,1 +1,24 @@
-<p>apiinterface works!</p>
+<div class="api-key-container">
+    <h3>Your API Key</h3>
+    <p class="api-key">{{ apiKey }}</p>
+    
+    <div class="button-container">
+        <button type="button" (click)="getAPIKey()">Get Key</button>
+    <button type="button" (click)="regenerateAPIKey()">Regenerate Key</button>
+    </div>
+    
+
+    <div class="security-warning">
+        <h4>⚠️ Important Security Notice</h4>
+        <p>
+            Your API key is a sensitive credential. Treat it like a password and do not share it with anyone.
+            Exposing your key to unknown individuals may lead to unauthorized access and potential security risks.
+        </p>
+        <ul>
+            <li>Do not share this key with untrusted parties.</li>
+            <li>Avoid storing it in public repositories or unsecured locations.</li>
+            <li>If you suspect a leak, regenerate your key immediately.</li>
+        </ul>
+        <p><strong>Need help securing your key?</strong> Contact support for best practices.</p>
+    </div>
+</div>
