@@ -10,6 +10,7 @@ import { ViewcomplaintsComponent } from './viewcomplaints/viewcomplaints.compone
 import { ViewusersComponent } from './viewusers/viewusers.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RouterLink, 
     RouterOutlet,
     ReactiveFormsModule,
+    CanvasJSAngularChartsModule,
     FormsModule
   ],
   exports: [

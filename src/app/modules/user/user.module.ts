@@ -13,6 +13,7 @@ import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
+import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize
     UserRoutingModule, 
     ReactiveFormsModule,
     RouterOutlet,
-    HttpClientModule
+    CanvasJSAngularChartsModule,
+    HttpClientModule,
   ],
   exports: [
     ApiinterfaceComponent,
