@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { ApikeyService } from '../services/apikey.service';
-import { LoggeduserService } from '../services/loggeduser.service';
+import { ApikeyService } from '../../../services/apikey/apikey.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { error } from 'console';
 import Swal from 'sweetalert2';
 import e from 'express';

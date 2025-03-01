@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoggeduserService } from './loggeduser.service';
+import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { BehaviorSubject } from 'rxjs';
 

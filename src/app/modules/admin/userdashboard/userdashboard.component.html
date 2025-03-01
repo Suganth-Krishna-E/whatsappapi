@@ -1,4 +1,33 @@
-<p>userdashboard works!</p>
-<div>
-    <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'360px'}"></canvasjs-chart>    
-</div>   
+<div class="user-dashboard-container" *ngIf="dashBoardResponse">
+    <div class="points-message-status-container">
+        <div class="points-stats-container">
+            <div class="bought-points-container">
+                Total points bougt: {{ dashBoardResponse.totalBoughtPoints }}
+            </div>
+            <div class="left-points-container">
+                Total points bougt: {{ dashBoardResponse.totalLeftPoints }}
+            </div>
+            <div class="requested-points-container">
+                Total points bougt: {{ dashBoardResponse.totalRequestedPoints }}
+            </div>
+        </div>
+        <div class="success-failed-message-ratio-container">
+            <canvasjs-chart [options]="chartOptions" [styles]="{width: '30%', height:'260px'}"></canvasjs-chart>    
+        </div>   
+    </div>
+    <div class="api-key-whatsapp-session-container">
+        <div class="api-key-container">
+            Last Generated: {{ dashBoardResponse.apiKeyLastGeneratedDateTime }}
+            <button type="button" (click)="getKeyPage()" [disabled]="getLoggedRole()">Get Key</button>
+        </div>
+        <div class="session-container">
+            <div>
+                Session: <p [ngClass]="sessionDataWithColor()"> {{ dashBoardResponse.whatsAppSessionDetail }} </p>
+            </div>
+            <div>
+                Last Registered Date: {{ dashBoardResponse.whatsAppLastRegisteredDateTime }}
+            </div>
+        </div>
+    </div>
+    
+</div>

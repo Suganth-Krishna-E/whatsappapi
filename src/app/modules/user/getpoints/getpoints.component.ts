@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PointsService } from '../services/points.service';
+import { PointsService } from '../../../services/points/points.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { LoggeduserService } from '../services/loggeduser.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 
 @Component({
   selector: 'app-getpoints',

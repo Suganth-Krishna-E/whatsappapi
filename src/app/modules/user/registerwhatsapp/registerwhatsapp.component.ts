@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WhatsappService } from '../services/whatsapp.service';
-import { LoggeduserService } from '../services/loggeduser.service';
+import { WhatsappService } from '../../../services/whatsapp/whatsapp.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../../user/services/loggeduser.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 

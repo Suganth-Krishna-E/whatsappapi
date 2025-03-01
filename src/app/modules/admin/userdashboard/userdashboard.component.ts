@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { DashboardService } from '../servies/dashboard.service';
-import { LoggeduserService } from '../../user/services/loggeduser.service';
-import { error } from 'console';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-userdashboard',
@@ -10,17 +10,20 @@ import { error } from 'console';
 })
 export class UserdashboardComponent {
 
-  ratioArray: RatioMessages[] | null = null;
+  dashBoardResponse: DashboardResponse | null = null;
 
-  constructor(private dashboardService: DashboardService, private loggedUserService: LoggeduserService) {
+  ratioArray: { label: string, y: number }[] = [];
+
+  constructor(private dashboardService: DashboardService, private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.getAllMessagesWithRatio();
   }
 
   getAllMessagesWithRatio() {
-    this.dashboardService.getAllMessagesWithRatio(this.loggedUserService.getUserId()).subscribe(
+    this.dashboardService.getDashboardStatsUser(this.loggedUserService.getUserId()).subscribe(
       (response) => {
         console.log(response);
-        this.convertObjectToRatioMessages(response);
+        // this.dashBoardResponse = response;
+        // this.mapResponseToChart(response);
       },
       (error) => {
         console.log(error);
@@ -28,41 +31,74 @@ export class UserdashboardComponent {
     )
   }
   
-  convertObjectToRatioMessages(inputData: Response) {
-    console.log(inputData);
+  mapResponseToChart(inputData: DashboardResponse) {
+    if (!inputData || !inputData.ratios) {
+      return;
+    }
+
+    this.ratioArray = Object.entries(inputData.ratios).map(([status, ratio]) => ({
+      label: status,
+      y: parseFloat(ratio.toString().replace('%', ''))
+    }));
+
+    this.chartOptions = {
+      animationEnabled: true,
+      title: {
+        text: "Messages by Status"
+      },
+      data: [{
+        type: "pie",
+        startAngle: -90,
+        indexLabel: "{label}: {y}%",
+        yValueFormatString: "#,###.##'%'",
+        dataPoints: [...this.ratioArray]
+      }]
+    };
+  }
+
+  getKeyPage(): void { 
+    this.router.navigate(['../apiinterface'], { relativeTo: this.activatedRoute });
+  }
+
+  getLoggedRole(): boolean {
+    return this.router.url.startsWith("/admin/dashboard");
+  }
+
+  sessionDataWithColor(): String {
+    if(this.dashBoardResponse?.whatsAppSessionDetail === "active") {
+      return "green-session";
+    }
+    else {
+      return "red-session";
+    }
   }
 
   chartOptions = {
-	  animationEnabled: true,
-	  title: {
-		text: "Messages by Status"
-	  },
-	  data: [{
-		type: "pie",
-		startAngle: -90,
-		indexLabel: "{status}: {ratio}",
-		yValueFormatString: "#,###.##'%'",
-		dataPoints: this.ratioArray
-	  }]
-	}
+    animationEnabled: true,
+    title: {
+      text: "Messages by Status"
+    },
+    data: [{
+      type: "pie",
+      startAngle: -90,
+      indexLabel: "{label}: {y}%",
+      yValueFormatString: "#,###.##'%'",
+      dataPoints: [...this.ratioArray]
+    }]
+  };
+
 }
 
-
-
-interface RatioMessages {
-  ratio: number;
-  status: String;
-}
-
-interface RatioResponse {
-  ratios: RatioMessages;
-}
-
-interface Response {
-  FAILED: String;
-  SENT: String;
+interface DashboardResponse {
+  totalBoughtPoints? : number;
+  totalLeftPoints? : number;
+  totalRequestedPoints? : number;
+  apiKeyLastGeneratedDateTime? : String;
+  whatsAppSessionDetail? : String;
+  whatsAppLastRegisteredDateTime? : String;
+  FAILED?: number;
+  SENT?: number;
+  ratios: { [key: string]: string }; 
   totalMessages: number;
-  ratios: RatioResponse;
 }
-
 

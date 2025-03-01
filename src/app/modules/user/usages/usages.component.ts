@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../services/loggeduser.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import { MessageServiceService } from '../services/message-service.service';
+import { MessageServiceService } from '../../../services/message/message-service.service';
 
 @Component({
   selector: 'app-usages',

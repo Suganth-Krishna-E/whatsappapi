@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { LoggeduserService } from '../services/loggeduser.service';
+import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 
 @Component({
