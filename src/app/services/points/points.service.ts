@@ -86,7 +86,7 @@ export class PointsService {
       allocatedBy: this.loggedUserService.getUserId()
     };
 
-    return this.http.post(`${this.baseUrl}changeStatus`, pointRequest);
+    return this.http.post(`${this.pointRequestUrl}changeStatus`, pointRequest);
   }
 
   private handleMessage(data: string) {

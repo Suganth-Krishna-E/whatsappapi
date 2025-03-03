@@ -1,10 +1,11 @@
-
-    <input type="text" [formControl]="selectedUser" value="" />
-
+<div class="user-name-selector">
+    <label for="user-selector">Select user by ID</label>
+    <input id="user-selector" type="text" [formControl]="selectedUser" />
+</div>
 
 
 <div *ngIf="requests.length > 0">
-    <h2>Previous Requests</h2>
+    <h2>User Requests</h2>
     <table>
         <thead>
             <tr>
@@ -28,8 +29,8 @@
                 <td>{{ request?.message }}</td>
                 <td>{{ request?.alloatedBy }}</td>
                 <td>{{ formatTime(request.allocatedOn) }}</td>
-                <td class="approve-data" (click)="changePointRequestState(request.id, 'approve')">Approve</td>
-                <td class="reject-data" (click)="changePointRequestState(request.id, 'reject')">Reject</td>
+                <td class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
+                <td class="reject-data" (click)="changePointRequestState(request, 'reject')">Reject</td>
             </tr>
         </tbody>
     </table>

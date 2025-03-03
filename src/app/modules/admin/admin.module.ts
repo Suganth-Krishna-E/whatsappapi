@@ -11,7 +11,8 @@ import { ViewusersComponent } from './viewusers/viewusers.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
-import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
+import { SharedmodulesModule } from '../sharedmodules/sharedmodules.module';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize
     ReactiveFormsModule,
     CanvasJSAngularChartsModule,
     FormsModule,
+    SharedmodulesModule
   ],
   exports: [
     AdmindashboardComponent,

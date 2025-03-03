@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { SharedmodulesModule } from '../sharedmodules/sharedmodules.module';
 
 
 @NgModule({
@@ -23,16 +24,17 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     GetpointsComponent,
     RegisterwhatsappComponent,
     UsagesComponent,
-    UserhomeComponent,
-    TextAreaResizeDirective
+    UserhomeComponent
   ],
   imports: [
     CommonModule,
     UserRoutingModule, 
     ReactiveFormsModule,
     RouterOutlet,
+    SharedmodulesModule,
     CanvasJSAngularChartsModule,
     HttpClientModule,
+    
   ],
   exports: [
     ApiinterfaceComponent,
