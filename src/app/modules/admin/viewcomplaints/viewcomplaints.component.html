@@ -1,5 +1,12 @@
+<div class="user-selector">
+    <div>
+        <label for="userSearch">Search User:</label>
+        <input id="userSearch" type="text" [formControl]="userSearchControl" placeholder="Type to search user..." />
+    </div>
+</div>
+
 <div class="view-selector">
-    <button type="button" (click)="changeToResolveComplaint(this.selectedUser)">Resolve Complaint</button>
+    <button type="button" (click)="changeToResolveComplaint(null)">Resolve Complaint</button>
     <button type="button" (click)="changeToViewComplaints()">View Complaints</button>
 </div>
 
@@ -7,40 +14,56 @@
     <h2>Resolve Complaint</h2>
     <form [formGroup]="complaintResolveForm" (ngSubmit)="submitResolvedComplaint()">
         
-        <label for="complaintId">Complaint ID:</label>
-        <input id="complaintId" formControlName="id" readonly />
+        <div class="unchangable-data">
+            <div class="sub-class-holder">
+                <label for="complaintId">Complaint ID:</label><br>
+                <input id="complaintId" formControlName="id" />
+            </div>
+            
+    
+            <div class="sub-class-holder">
+                <label for="userId">User Id:</label><br>
+                <input id="userId" formControlName="userId" readonly />
+            </div>
+    
+            <div class="sub-class-holder">
+                <label for="category">Category:</label><br>
+                <input id="category" formControlName="category" readonly />
+            </div>
+        </div>
+        
+        <div class="class-holder">
+            <label for="message">Message:</label>
+            <textarea appTextAreaResize id="message" formControlName="message" readonly></textarea>
+        </div>
 
-        <label for="userId">User Id:</label>
-        <input id="userId" formControlName="userId" readonly />
+        <div class="class-holder">
+            <label for="status">Status:</label><br>
+            <select formControlName="status">Change Status
+                <option value="PENDING">Pending</option>
+                <option value="RESOLVED">Resolved</option>
+            </select>
+        </div>
 
-        <label for="category">Category:</label>
-        <input id="category" formControlName="category" readonly />
+        <div class="class-holder">
+            <label for="adminMessage">Admin Response:</label>
+            <textarea appTextAreaResize id="adminMessage" formControlName="adminMessage" required></textarea>
+        </div>
 
-        <label for="message">Message:</label>
-        <textarea appTextAreaResize id="message" formControlName="message" readonly></textarea>
-
-        <label for="adminMessage">Admin Response:</label>
-        <textarea appTextAreaResize id="adminMessage" formControlName="adminMessage" required></textarea>
-
-        <button type="submit" [disabled]="complaintResolveForm.invalid">Submit</button>
+        <div class="button-class-holder">
+            <button type="submit" [disabled]="complaintResolveForm.invalid">Submit</button>
+        </div>
+        
     </form>
 </div>
 
 
 <div>
-    <div class="user-selector">
-        <label for="userSearch">Search User:</label>
-        <input id="userSearch" type="text" [formControl]="userSearchControl" placeholder="Type to search user..." />
-
-        <select [(ngModel)]="selectedUser" (change)="fetchComplaints()">
-            <option *ngFor="let user of filteredUsers" [value]="user">{{ user }}</option>
-        </select>
-    </div>
-
     <div *ngIf="complaints.length > 0 && viewSelector === 'view'" class="complaints-container">
         <table>
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Category</th>
                     <th>Status</th>
                     <th>Message</th>
@@ -51,6 +74,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let complaint of complaints" (click)="changeToResolveComplaint(complaint)">
+                    <td>{{ complaint?.id }}</td>
                     <td>{{ complaint?.category }}</td>
                     <td [ngClass]="resolvedStatus(complaint.status)">
                         {{ complaint?.status }}

@@ -26,7 +26,7 @@ export class ComplaintService {
   }
 
   resolveComplaint(complaint: {id: string, message: string, adminId: string}): Observable<any> {
-    return this.http.post(`${this.baseUrl}resolveComplaint`, complaint);
+    return this.http.post(`${this.baseUrl}updateComplaint`, complaint);
   }
 
   getCategories(): string[] {
