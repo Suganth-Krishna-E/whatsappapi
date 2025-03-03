@@ -10,6 +10,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class UserdashboardComponent {
 
+  userName: String = "Suganth_Krishna_E";
+  userType: String = "User";
+
   dashBoardResponse: DashboardResponse | null = null;
 
   ratioArray: { label: string, y: number }[] = [];
@@ -22,8 +25,8 @@ export class UserdashboardComponent {
     this.dashboardService.getDashboardStatsUser(this.loggedUserService.getUserId()).subscribe(
       (response) => {
         console.log(response);
-        // this.dashBoardResponse = response;
-        // this.mapResponseToChart(response);
+        this.dashBoardResponse = response;
+        this.mapResponseToChart(response);
       },
       (error) => {
         console.log(error);

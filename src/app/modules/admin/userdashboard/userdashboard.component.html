@@ -1,33 +1,42 @@
-<div class="user-dashboard-container" *ngIf="dashBoardResponse">
-    <div class="points-message-status-container">
-        <div class="points-stats-container">
-            <div class="bought-points-container">
-                Total points bougt: {{ dashBoardResponse.totalBoughtPoints }}
-            </div>
-            <div class="left-points-container">
-                Total points bougt: {{ dashBoardResponse.totalLeftPoints }}
-            </div>
-            <div class="requested-points-container">
-                Total points bougt: {{ dashBoardResponse.totalRequestedPoints }}
-            </div>
-        </div>
-        <div class="success-failed-message-ratio-container">
-            <canvasjs-chart [options]="chartOptions" [styles]="{width: '30%', height:'260px'}"></canvasjs-chart>    
-        </div>   
+<div class="dashboard-container">
+    <!-- User Welcome Section -->
+    <div class="dashboard-header">
+        <h2>Dashboard</h2>
+        <p>Welcome, <strong>{{ userName }}  </strong> <span class="role-badge">{{ userType }}</span></p>
     </div>
-    <div class="api-key-whatsapp-session-container">
-        <div class="api-key-container">
-            Last Generated: {{ dashBoardResponse.apiKeyLastGeneratedDateTime }}
-            <button type="button" (click)="getKeyPage()" [disabled]="getLoggedRole()">Get Key</button>
+
+    <!-- Stats Cards -->
+    <div class="stats-container" *ngIf="dashBoardResponse">
+        <div class="stat-card">
+            <h4>Total Points Bought</h4>
+            <p>{{ dashBoardResponse.totalBoughtPoints || 0 }}</p>
         </div>
-        <div class="session-container">
-            <div>
-                Session: <p [ngClass]="sessionDataWithColor()"> {{ dashBoardResponse.whatsAppSessionDetail }} </p>
-            </div>
-            <div>
-                Last Registered Date: {{ dashBoardResponse.whatsAppLastRegisteredDateTime }}
-            </div>
+        <div class="stat-card">
+            <h4>Total Points Left</h4>
+            <p>{{ dashBoardResponse.totalLeftPoints || 0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h4>Total Requested Points</h4>
+            <p>{{ dashBoardResponse.totalRequestedPoints || 0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h4>API Key Last Generated</h4>
+            <p>{{ dashBoardResponse.apiKeyLastGeneratedDateTime || null }}</p>
+        </div>
+        <div class="stat-card">
+            <h4>WhatsApp Session</h4>
+            <p [ngClass]="sessionDataWithColor()">{{ dashBoardResponse.whatsAppSessionDetail }}</p>
         </div>
     </div>
-    
+
+    <!-- Graph Section -->
+    <div class="graph-container">
+        <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'300px'}"></canvasjs-chart>
+    </div>
+
+    <!-- API Key Section -->
+    <div class="api-key-section">
+        <p>Last Generated: {{ dashBoardResponse.apiKeyLastGeneratedDateTime }}</p>
+        <button type="button" (click)="getKeyPage()" [disabled]="getLoggedRole()">Get Key</button>
+    </div>
 </div>

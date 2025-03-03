@@ -11,7 +11,6 @@ export class DashboardService {
 
   getDashboardStatsUser(userId: String | null) {
     console.log(userId);
-    // return this.http.get<Object>(`${this.baseUrl}getUserDashboardData/${userId}`);
     return this.http.get<DashboardResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);
   }
 
