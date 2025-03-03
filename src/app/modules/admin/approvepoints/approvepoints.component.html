@@ -1,1 +1,41 @@
-<p>approvepoints works!</p>
+
+    <input type="text" [formControl]="selectedUser" value="" />
+
+
+
+<div *ngIf="requests.length > 0">
+    <h2>Previous Requests</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Number of Points</th>
+                <th>Requested Timestamp</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Allocated By</th>
+                <th>Allocated Timestamp</th>
+                <th>Approve</th>
+                <th>Reject</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let request of requests">
+                <td>{{ request?.pointsRequested }}</td>
+                <td>{{ formatTime(request.requestedOn) }}</td>
+                <td [ngClass]="request.status.toLowerCase()">
+                    {{ request?.status }}
+                </td>
+                <td>{{ request?.message }}</td>
+                <td>{{ request?.alloatedBy }}</td>
+                <td>{{ formatTime(request.allocatedOn) }}</td>
+                <td class="approve-data" (click)="changePointRequestState(request.id, 'approve')">Approve</td>
+                <td class="reject-data" (click)="changePointRequestState(request.id, 'reject')">Reject</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+        <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+    </div>
+</div>

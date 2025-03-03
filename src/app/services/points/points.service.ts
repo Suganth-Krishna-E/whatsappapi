@@ -78,6 +78,17 @@ export class PointsService {
     return this.http.get(`${this.baseUrl}status/${orderId}`);
   }
 
+  changeRequestStatus(pointRequestId: string, status: string, message: string) {
+    const pointRequest: PointRequest = {
+      id: pointRequestId,
+      status: status,
+      message: message,
+      allocatedBy: this.loggedUserService.getUserId()
+    };
+
+    return this.http.post(`${this.baseUrl}changeStatus`, pointRequest);
+  }
+
   private handleMessage(data: string) {
     try {
       const message = JSON.parse(data);
@@ -109,6 +120,13 @@ export class PointsService {
   getStatusObservable() {
     return this.statusSubject.asObservable();
   }
+}
+
+interface PointRequest {
+  id: string;
+  status: string;
+  message: string;
+  allocatedBy: string | null;
 }
 
 interface Payment {

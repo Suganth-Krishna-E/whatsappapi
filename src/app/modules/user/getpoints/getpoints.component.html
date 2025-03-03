@@ -1,28 +1,9 @@
-<div class="main-container">
-  <div class="points-number-container" [formGroup]="pointsFormGroup">
-    <div class="points-button-container" *ngIf="underPayment === false">
-      <input class="point-value" type="number" placeholder="Enter number of points" formControlName="point"> 
-      <button type="button" (click)="requestQr()" *ngIf="paymentType === 'upi'">Get QR</button>
-      <button type="button" (click)="requestPoints()" *ngIf="paymentType === 'manual'">Request points</button>
-    </div>
-    <div class="payment-mode-selector" *ngIf="!underPayment">
-      <input type="radio" name="paymenttype" formControlName="paymenttype" id="manualmode" value="manual"><label for="manualmode">Manual</label>
-      <input type="radio" name="paymenttype" formControlName="paymenttype" id="upimode" value="upi"><label for="upimode">UPI</label>
-    </div>
-  </div>
-  
-  
-  <div *ngIf="qrCode" class="qrcode-container">
-    <img [src]="qrCode" alt="QR Code">
-  </div>  
-</div>
-
-<div *ngIf="requests.length > 0 && paymentType === 'manual'" class="requests-container">
+<div *ngIf="requests.length > 0" class="requests-container">
   <h2>Previous Requests</h2>
   <table>
       <thead>
           <tr>
-              <th>Number od Points</th>
+              <th>Number of Points</th>
               <th>Requested Timestamp</th>
               <th>Status</th>
               <th>Message</th>

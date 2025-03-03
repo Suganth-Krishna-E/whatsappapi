@@ -20,8 +20,7 @@ import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize
     ApprovepointsComponent,
     UserdashboardComponent,
     ViewcomplaintsComponent,
-    ViewusersComponent,
-    TextAreaResizeDirective
+    ViewusersComponent
   ],
   imports: [
     CommonModule,
