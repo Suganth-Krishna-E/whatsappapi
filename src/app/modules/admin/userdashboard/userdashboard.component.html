@@ -1,42 +1,52 @@
-<div class="dashboard-container">
-    <!-- User Welcome Section -->
+<div class="dashboard-container" *ngIf="dashBoardResponse">
     <div class="dashboard-header">
-        <h2>Dashboard</h2>
-        <p>Welcome, <strong>{{ userName }}  </strong> <span class="role-badge">{{ userType }}</span></p>
+        <h2>Welcome, {{ userName }}</h2>
+        <span class="role-badge">{{ userType }}</span>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-container" *ngIf="dashBoardResponse">
+    <div class="stats-container">
         <div class="stat-card">
-            <h4>Total Points Bought</h4>
-            <p>{{ dashBoardResponse.totalBoughtPoints || 0 }}</p>
+            <p>Total Points Bought</p>
+            <h2>{{ dashBoardResponse.totalBoughtPoints }}</h2>
         </div>
         <div class="stat-card">
-            <h4>Total Points Left</h4>
-            <p>{{ dashBoardResponse.totalLeftPoints || 0 }}</p>
+            <p>Total Points Left</p>
+            <h2>{{ dashBoardResponse.totalLeftPoints }}</h2>
         </div>
         <div class="stat-card">
-            <h4>Total Requested Points</h4>
-            <p>{{ dashBoardResponse.totalRequestedPoints || 0 }}</p>
-        </div>
-        <div class="stat-card">
-            <h4>API Key Last Generated</h4>
-            <p>{{ dashBoardResponse.apiKeyLastGeneratedDateTime || null }}</p>
-        </div>
-        <div class="stat-card">
-            <h4>WhatsApp Session</h4>
-            <p [ngClass]="sessionDataWithColor()">{{ dashBoardResponse.whatsAppSessionDetail }}</p>
+            <p>Total Requested Points</p>
+            <h2>{{ dashBoardResponse.totalRequestedPoints }}</h2>
         </div>
     </div>
 
-    <!-- Graph Section -->
+    <div class="message-stats-container">
+        <div class="stat-card total-messages">
+            <p>Total Messages</p>
+            <h2>{{ dashBoardResponse.totalMessages }}</h2>
+        </div>
+        <div class="stat-card sent-messages">
+            <p>Sent Messages</p>
+            <h2>{{ dashBoardResponse.sent || 0 }}</h2>
+        </div>
+        <div class="stat-card failed-messages">
+            <p>Failed Messages</p>
+            <h2>{{ dashBoardResponse.failed || 0 }}</h2>
+        </div>
+    </div>
+
     <div class="graph-container">
         <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'300px'}"></canvasjs-chart>
     </div>
 
-    <!-- API Key Section -->
     <div class="api-key-section">
-        <p>Last Generated: {{ dashBoardResponse.apiKeyLastGeneratedDateTime }}</p>
+        <div class="api-key-info">
+            <p><strong>Last Generated:</strong> {{ dashBoardResponse.apiKeyLastGeneratedDateTime }}</p>
+        </div>
         <button type="button" (click)="getKeyPage()" [disabled]="getLoggedRole()">Get Key</button>
+    </div>
+
+    <div class="session-container">
+        <p><strong>Session:</strong> <span [ngClass]="sessionDataWithColor()">{{ dashBoardResponse.whatsAppSessionDetail }}</span></p>
+        <p><strong>Last Registered Date:</strong> {{ dashBoardResponse.whatsAppLastRegisteredDateTime }}</p>
     </div>
 </div>

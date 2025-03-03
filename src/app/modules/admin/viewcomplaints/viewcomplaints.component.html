@@ -1,1 +1,75 @@
-<p>viewcomplaints works!</p>
+<div class="view-selector">
+    <button type="button" (click)="changeToResolveComplaint(this.selectedUser)">Resolve Complaint</button>
+    <button type="button" (click)="changeToViewComplaints()">View Complaints</button>
+</div>
+
+<div class="complaint-registration" *ngIf="viewSelector === 'resolve'">
+    <h2>Resolve Complaint</h2>
+    <form [formGroup]="complaintResolveForm" (ngSubmit)="submitResolvedComplaint()">
+        
+        <label for="complaintId">Complaint ID:</label>
+        <input id="complaintId" formControlName="id" readonly />
+
+        <label for="userId">User Id:</label>
+        <input id="userId" formControlName="userId" readonly />
+
+        <label for="category">Category:</label>
+        <input id="category" formControlName="category" readonly />
+
+        <label for="message">Message:</label>
+        <textarea appTextAreaResize id="message" formControlName="message" readonly></textarea>
+
+        <label for="adminMessage">Admin Response:</label>
+        <textarea appTextAreaResize id="adminMessage" formControlName="adminMessage" required></textarea>
+
+        <button type="submit" [disabled]="complaintResolveForm.invalid">Submit</button>
+    </form>
+</div>
+
+
+<div>
+    <div class="user-selector">
+        <label for="userSearch">Search User:</label>
+        <input id="userSearch" type="text" [formControl]="userSearchControl" placeholder="Type to search user..." />
+
+        <select [(ngModel)]="selectedUser" (change)="fetchComplaints()">
+            <option *ngFor="let user of filteredUsers" [value]="user">{{ user }}</option>
+        </select>
+    </div>
+
+    <div *ngIf="complaints.length > 0 && viewSelector === 'view'" class="complaints-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th>Admin Message</th>
+                    <th>Registered Timestamp</th>
+                    <th>Resolved Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let complaint of complaints" (click)="changeToResolveComplaint(complaint)">
+                    <td>{{ complaint?.category }}</td>
+                    <td [ngClass]="resolvedStatus(complaint.status)">
+                        {{ complaint?.status }}
+                    </td>
+    
+                    <td>{{ complaint?.message }}</td>
+                    <td>{{ complaint?.adminMessage }}</td>
+                    <td>{{ formatTime(complaint.registeredTimestamp) }}</td>
+                    <td>{{ formatTime(complaint.resolvedTimestamp) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    
+        <div class="pagination">
+            <button (click)="prevPage()" [disabled]="page === 0">Previous</button>
+            <button (click)="nextPage()" [disabled]="page === totalPages - 1">Next</button>
+        </div>
+    </div>
+    
+</div>
+
+<p *ngIf="complaints?.length === 0" class="no-messages">No complaints found.</p>

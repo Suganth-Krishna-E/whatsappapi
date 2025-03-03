@@ -1,6 +1,9 @@
 .dashboard-container {
+    max-width: 900px;
+    margin: auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
 }
 
 .dashboard-header {
@@ -14,14 +17,15 @@
     border: 2px solid grey;
     color: black;
     padding: 5px 10px;
-    margin-left: 0.5rem;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
+    margin-bottom: 20px;
 }
 
 .stat-card {
@@ -30,21 +34,72 @@
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.message-stats-container {
+    display: flex;
+    gap: 10px;
+    justify-content: space-evenly;
+    margin-bottom: 20px;
+}
+
+.total-messages {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.sent-messages {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.failed-messages {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 .graph-container {
-    margin-top: 20px;
     background: white;
     padding: 15px;
     border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
 .api-key-section {
-    margin-top: 20px;
-    padding: 15px;
     background: white;
+    padding: 15px;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.api-key-section button {
+    padding: 8px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.api-key-section button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.session-container {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.session-container p {
+    margin: 5px 0;
 }

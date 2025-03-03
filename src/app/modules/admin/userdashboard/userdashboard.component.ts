@@ -99,8 +99,8 @@ interface DashboardResponse {
   apiKeyLastGeneratedDateTime? : String;
   whatsAppSessionDetail? : String;
   whatsAppLastRegisteredDateTime? : String;
-  FAILED?: number;
-  SENT?: number;
+  sent?: number;
+  failed?: number;
   ratios: { [key: string]: string }; 
   totalMessages: number;
 }

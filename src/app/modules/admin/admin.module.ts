@@ -11,6 +11,7 @@ import { ViewusersComponent } from './viewusers/viewusers.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
+import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     ApprovepointsComponent,
     UserdashboardComponent,
     ViewcomplaintsComponent,
-    ViewusersComponent
+    ViewusersComponent,
+    TextAreaResizeDirective
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,7 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
     RouterOutlet,
     ReactiveFormsModule,
     CanvasJSAngularChartsModule,
-    FormsModule
+    FormsModule,
   ],
   exports: [
     AdmindashboardComponent,
