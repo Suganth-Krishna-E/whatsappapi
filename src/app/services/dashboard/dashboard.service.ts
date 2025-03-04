@@ -14,6 +14,10 @@ export class DashboardService {
     return this.http.get<DashboardResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);
   }
 
+  getDashboardStatsAdmin() {
+    return this.http.get<DashboardResponseAdmin>(`${this.baseUrl}getAdminDashboardData`);
+  }
+
 }
 
 interface DashboardResponse {
@@ -27,4 +31,15 @@ interface DashboardResponse {
   SENT?: number;
   ratios: { [key: string]: string }; 
   totalMessages: number;
+}
+
+interface DashboardResponseAdmin {
+  noOfUsers? : number;
+  noOfSessions? : number;
+  noOfActiveSessions? : number;
+  noOfInactiveSessions? : number;
+  noOfUnsolvedComplaints? : number;
+  totalNoOfMessages? : number;
+  totalNoOfPointRequests? : number;
+  ratios: { [key: string]: string }; 
 }

@@ -16,7 +16,7 @@ export class UserIdValidator {
             }
 
             return of(control.value).pipe(
-                debounceTime(500),
+                debounceTime(5000),
                 switchMap(userId => 
                     this.userService.checkUserIdAvailability(userId).pipe(
                         map(response =>  (response ? { userIdTaken: true } : null)), 

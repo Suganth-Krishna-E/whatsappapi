@@ -50,7 +50,7 @@ export class ViewcomplaintsComponent {
   ngOnInit() {
     this.userSearchControl.valueChanges
       .pipe(
-        debounceTime(500)
+        debounceTime(5000)
       )
       .subscribe(users => {
         this.selectedUser = users;

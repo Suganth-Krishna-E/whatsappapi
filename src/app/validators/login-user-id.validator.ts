@@ -17,7 +17,7 @@ export class loginUserIdValidator {
                 }
     
                 return of(control.value).pipe(
-                    debounceTime(500),
+                    debounceTime(5000),
                     switchMap(userId => 
                         this.userService.checkAdminIdAvailability(userId).pipe(
                             map(response =>  (response ? null : { userIdTaken: true })), 
@@ -34,7 +34,7 @@ export class loginUserIdValidator {
                 }
     
                 return of(control.value).pipe(
-                    debounceTime(500),
+                    debounceTime(5000),
                     switchMap(userId => 
                         this.userService.checkUserIdAvailability(userId).pipe(
                             map(response =>  (response ? null : { userIdTaken: true })), 

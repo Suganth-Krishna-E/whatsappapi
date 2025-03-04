@@ -1,1 +1,40 @@
-<p>admindashboard works!</p>
+<div class="dashboard-container" *ngIf="dashBoardResponse">
+    <div class="dashboard-header">
+        <h2>Welcome, {{ userName }}</h2>
+        <span class="role-badge">{{ userType }}</span>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card" (click)="loadUsersPage()">
+            <p>Total Number of Users</p>
+            <h2>{{ dashBoardResponse.noOfUsers }}</h2>
+        </div>
+        <div class="stat-card" (click)="loadComplaintsPage()">
+            <p>Total number of complaints</p>
+            <h2>{{ dashBoardResponse.noOfUnsolvedComplaints }}</h2>
+        </div>
+        <div class="stat-card">
+            <p>Total number of messages</p>
+            <h2>{{ dashBoardResponse.totalNoOfMessages }}</h2>
+        </div>
+    </div>
+
+    <div class="message-stats-container">
+        <div class="stat-card total-messages">
+            <p>Total sessions</p>
+            <h2>{{ dashBoardResponse.noOfSessions }}</h2>
+        </div>
+        <div class="stat-card sent-messages">
+            <p>Active Sessions</p>
+            <h2>{{ dashBoardResponse.noOfActiveSessions }}</h2>
+        </div>
+        <div class="stat-card failed-messages">
+            <p>Inactive Sessions</p>
+            <h2>{{ dashBoardResponse.noOfInactiveSessions }}</h2>
+        </div>
+    </div>
+
+    <div class="graph-container">
+        <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height:'300px'}"></canvasjs-chart>
+    </div>
+</div>
