@@ -18,12 +18,15 @@ export class UserdashboardComponent {
   ratioArray: { label: string, y: number }[] = [];
 
   constructor(private dashboardService: DashboardService, private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.getAllMessagesWithRatio();
-    this.userName = loggedUserService.getUserId();
+    console.log(this.activatedRoute.paramMap);
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.userName = params.get('userId');
+      this.getAllMessagesWithRatio();      
+   });
   }
 
   getAllMessagesWithRatio() {
-    this.dashboardService.getDashboardStatsUser(this.loggedUserService.getUserId()).subscribe(
+    this.dashboardService.getDashboardStatsUser(this.userName).subscribe(
       (response) => {
         console.log(response);
         this.dashBoardResponse = response;

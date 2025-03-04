@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 export class UserhomeComponent {
   userName: string | null = null;
   
-    constructor(private loggedUserService: LoggeduserService, private router: Router) {}
+    constructor(private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {}
   
     ngOnInit(): void {
       this.userName = this.loggedUserService.getUserId();
@@ -21,5 +21,14 @@ export class UserhomeComponent {
           this.router.navigate(['/login']);
         });
       }
+    }
+
+    loadUserDashboard() {
+      this.router.navigate([`./dashboard/${this.loggedUserService.getUserId()}`], { relativeTo: this.activatedRoute });
+    }
+
+    logout() {
+      this.loggedUserService.setUserId(null);
+      this.router.navigate(['/login']);
     }
 }

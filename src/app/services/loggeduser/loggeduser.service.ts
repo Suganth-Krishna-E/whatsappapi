@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class LoggeduserService {
   private userId: string | null = null;
 
-  setUserId(id: string) {
+  setUserId(id: string | null) {
     this.userId = id;
   }
 

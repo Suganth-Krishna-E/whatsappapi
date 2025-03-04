@@ -22,5 +22,10 @@ export class AdminhomeComponent {
       });
     }
   }
+
+  logout() {
+    this.loggedUserService.setUserId(null);
+    this.router.navigate(['/login']);
+  }
   
 }

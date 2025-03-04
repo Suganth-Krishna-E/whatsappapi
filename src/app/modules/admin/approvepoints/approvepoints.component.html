@@ -29,7 +29,7 @@
                 <td>{{ request?.message }}</td>
                 <td>{{ request?.allocatedBy }}</td>
                 <td>{{ formatTime(request.allocatedOn) }}</td>
-                <td class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
+                <td [hidden]="request.status === 'APPROVED'" class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
                 <td class="reject-data" (click)="changePointRequestState(request, 'reject')">Reject</td>
             </tr>
         </tbody>

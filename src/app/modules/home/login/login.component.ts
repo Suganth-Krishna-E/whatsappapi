@@ -34,6 +34,7 @@ export class LoginComponent {
       (newValue) => {
         this.loginForm.controls['userId'].clearAsyncValidators();
         this.loginForm.controls['userId'].addAsyncValidators([this.loginUserIdValidator.checkUserId(newValue)]);
+        this.loginForm.controls['userId'].updateValueAndValidity({ onlySelf: true, emitEvent: false });
       }
     )
   }

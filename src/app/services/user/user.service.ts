@@ -34,6 +34,14 @@ export class UserService {
   checkAdminIdAvailability(adminId: string): Observable<{ available: boolean}> {
     return this.http.get<{ available: boolean }>(`${this.baseUserUrl}adminIdAvailable/${adminId}`);
   }
+
+  getAllUsers( page: number, size: number) {
+    return this.http.get(`${this.baseUserUrl}getAllUsers/${page}/${size}`);
+  }
+
+  getTotalPagesCount(size: number) {
+    return this.http.get(`${this.baseUserUrl}getTotalUsersCount/${size}`);
+  }
 }
 
 interface CreateUserRequest {

@@ -21,7 +21,7 @@ const routes: Routes = [
         component: ViewusersComponent
       },
       {
-        path: 'dashboard/:id',
+        path: 'dashboard/:userId',
         component: UserdashboardComponent
       },
       {

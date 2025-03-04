@@ -160,7 +160,7 @@ interface PointRequest {
   message: string;
   userId: string;
   status: string;
-  alloatedBy: string;
+  allocatedBy: string;
   requestedOn: string;
   allocatedOn: string;
 
