@@ -1,4 +1,4 @@
-<!-- <div class="register-container">
+<div class="register-container">
     <h2>User Registration</h2>
     
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -6,12 +6,25 @@
             <div class="column">
                 <label>User Name</label>
                 <input type="text" formControlName="userName" placeholder="Enter your name" />
+                <div *ngIf="registerForm.controls['userName'].touched && registerForm.controls['userName'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['userName'].errors?.['required']">User Name is required.</span>
+                    <span *ngIf="registerForm.controls['userName'].errors?.['pattern']">Only letters and spaces allowed (3-50 characters).</span>
+                </div>
 
                 <label>User ID</label>
                 <input type="text" formControlName="userId" placeholder="Enter unique User ID" />
+                <div *ngIf="registerForm.controls['userId'].touched && registerForm.controls['userId'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['userId'].errors?.['required']">User ID is required.</span>
+                    <span *ngIf="registerForm.controls['userId'].errors?.['pattern']">Only letters, numbers, `_`, and `$` allowed (7-20 characters).</span>
+                    <small *ngIf="registerForm.controls['userId'].errors?.['userIdTaken']">This User ID is already taken.</small>
+                </div>
 
                 <label>Company Name (Optional)</label>
                 <input type="text" formControlName="companyName" placeholder="Enter company name" />
+                <div *ngIf="registerForm.controls['companyName'].touched && registerForm.controls['companyName'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['companyName'].errors?.['minlength']">Minimum 3 characters required.</span>
+                    <span *ngIf="registerForm.controls['companyName'].errors?.['maxlength']">Maximum 100 characters allowed.</span>
+                </div>
 
                 <div class="checkbox-group">
                     <input type="checkbox" formControlName="isBusiness" />
@@ -21,27 +34,52 @@
                 <label>GST Number (Required for Business)</label>
                 <input type="text" formControlName="gstNumber" placeholder="Enter GST number"
                        [disabled]="!registerForm.controls['isBusiness'].value" />
+                <div *ngIf="registerForm.controls['gstNumber'].touched && registerForm.controls['gstNumber'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['gstNumber'].errors?.['pattern']">GST Number must be exactly 15 alphanumeric characters.</span>
+                </div>
             </div>
 
             <div class="column">
                 <label>Email</label>
                 <input type="email" formControlName="email" placeholder="Enter your email" />
+                <div *ngIf="registerForm.controls['email'].touched && registerForm.controls['email'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['email'].errors?.['required']">Email is required.</span>
+                    <span *ngIf="registerForm.controls['email'].errors?.['email']">Enter a valid email address.</span>
+                </div>
 
                 <label>Mobile Number</label>
                 <input type="text" formControlName="mobileNumber" placeholder="Enter 10-digit mobile number" />
+                <div *ngIf="registerForm.controls['mobileNumber'].touched && registerForm.controls['mobileNumber'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['mobileNumber'].errors?.['required']">Mobile Number is required.</span>
+                    <span *ngIf="registerForm.controls['mobileNumber'].errors?.['pattern']">Enter a valid 10-digit mobile number.</span>
+                </div>
 
                 <label>Address</label>
-                <textarea formControlName="address" placeholder="Enter your address"></textarea>
+                <textarea appTextAreaResize formControlName="address" placeholder="Enter your address"></textarea>
+                <div *ngIf="registerForm.controls['address'].touched && registerForm.controls['address'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['address'].errors?.['required']">Address is required.</span>
+                    <span *ngIf="registerForm.controls['address'].errors?.['minlength']">Minimum 10 characters required.</span>
+                    <span *ngIf="registerForm.controls['address'].errors?.['maxlength']">Maximum 200 characters allowed.</span>
+                </div>
 
                 <label>Password</label>
                 <input type="password" formControlName="password" placeholder="Enter a strong password" />
+                <div *ngIf="registerForm.controls['password'].touched && registerForm.controls['password'].invalid" class="error-message">
+                    <span *ngIf="registerForm.controls['password'].errors?.['required']">Password is required.</span>
+                    <span *ngIf="registerForm.controls['password'].errors?.['minlength']">Password must be at least 8 characters long.</span>
+                    <span *ngIf="registerForm.controls['password'].errors?.['pattern']">
+                        Password must include at least:
+                        <ul>
+                            <li>One letter (A-Z, a-z)</li>
+                            <li>One number (0-9)</li>
+                            <li>One special character (<b>&excl; &commat; &num; &dollar; &percnt; &Hat; &amp; &ast;</b>)</li>
+                        </ul>
+                    </span>
+                </div>
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Register</button>
+        <button type="submit" class="btn-submit" [disabled]="!this.registerForm.valid">Register</button>
     </form>
+</div>
 
-    <a routerLink="../login">Login</a>
-</div> -->
-
-<a routerLink="../login">Login</a>

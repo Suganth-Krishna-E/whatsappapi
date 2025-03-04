@@ -140,3 +140,19 @@ th {
     padding: 1rem;
     border-radius: 1rem;
 }
+
+.approve-data {
+    background-color: green;
+    border-radius: 1rem;
+    color: #f5efef;
+    margin: 1rem;
+    text-align: center;
+}
+
+.reject-data {
+    background-color: red;
+    color: #f5efef;
+    border-radius: 1rem;
+    margin: 1rem;
+    text-align: center;
+}

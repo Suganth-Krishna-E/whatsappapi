@@ -23,7 +23,7 @@ export class ApprovepointsComponent {
       message: new FormControl('This is approved by admin')
     });
 
-    this.selectedUser = new FormControl('Suganth_Krishna_E');
+    this.selectedUser = new FormControl('');
 
   }
 
@@ -73,7 +73,8 @@ export class ApprovepointsComponent {
             this.fetchRequests();
           },
           (error) => {
-            Swal.fire("Error", error.message, "error");
+            if(error.status === 805)
+            Swal.fire("Error", "Points already approved, Please refresh", "error");
           }
         );
       }
@@ -112,7 +113,7 @@ interface PointRequest {
   message: string;
   userId: string;
   status: string;
-  alloatedBy: string;
+  allocatedBy: string;
   requestedOn: string;
   allocatedOn: string;
 

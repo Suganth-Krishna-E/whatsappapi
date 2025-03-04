@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class UserdashboardComponent {
 
-  userName: String = "Suganth_Krishna_E";
+  userName: string | null = "";
   userType: String = "User";
 
   dashBoardResponse: DashboardResponse | null = null;
@@ -19,6 +19,7 @@ export class UserdashboardComponent {
 
   constructor(private dashboardService: DashboardService, private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {
     this.getAllMessagesWithRatio();
+    this.userName = loggedUserService.getUserId();
   }
 
   getAllMessagesWithRatio() {

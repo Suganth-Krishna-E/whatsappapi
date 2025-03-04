@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { CreateuserComponent } from './createuser/createuser.component';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedmodulesModule } from '../sharedmodules/sharedmodules.module';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RouterLink,
     RouterOutlet,
     FormsModule, 
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedmodulesModule
   ],
   exports: [
     LoginComponent,

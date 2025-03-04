@@ -1,0 +1,91 @@
+.login-container {
+    width: 60%;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #fff7f3; /* Light pastel orange */
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: black; /* Matches the register page */
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .login-container label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: black;
+  }
+  
+  .login-container input {
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 1rem;
+    width: 100%;
+    background-color: #fff2e6; /* Soft background */
+    color: black;
+  }
+  
+  .login-container input:focus {
+    outline: none;
+    box-shadow: 0 0 0.3rem rgba(255, 140, 0, 0.5);
+  }
+  
+  .btn-submit {
+    background-color: #FF9966; /* Matches register button */
+    color: white;
+    border: none;
+    padding: 1rem;
+    font-size: 1.2rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    width: 100%;
+  }
+  
+  .btn-submit:hover {
+    background-color: #FF5733;
+  }
+  
+  .btn-submit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .login-container a {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .login-container a:hover {
+    text-decoration: underline;
+  }
+  
+  .error-text {
+    color: red;
+    font-size: 12px;
+  }
+  
+
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+  }
+
+  .radio-group input {
+    width: 0.8rem;
+  }
