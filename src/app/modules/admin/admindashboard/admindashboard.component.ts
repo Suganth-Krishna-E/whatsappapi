@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admindashboard',
@@ -23,18 +24,25 @@ export class AdmindashboardComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-      this.getAllMessagesWithRatio();
+    this.getAllMessagesWithRatio();
+  }
+
+  ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
   }
 
   getAllMessagesWithRatio() {
     this.dashboardService.getDashboardStatsAdmin().subscribe(
-      (response:DashboardResponse) => {
-        console.log(response);
+      (response: DashboardResponse) => {
         this.dashBoardResponse = response;
         this.mapResponseToChart(response);
       },
       (error) => {
-        console.log(error);
+        Swal.fire("Error", error, "error");
       }
     )
   }
@@ -89,13 +97,13 @@ export class AdmindashboardComponent {
 }
 
 interface DashboardResponse {
-  noOfUsers? : number;
-  noOfSessions? : number;
-  noOfActiveSessions? : number;
-  noOfInactiveSessions? : number;
-  noOfUnsolvedComplaints? : number;
-  totalNoOfMessages? : number;
-  totalNoOfPointRequests? : number;
-  ratios: { [key: string]: string }; 
+  noOfUsers?: number;
+  noOfSessions?: number;
+  noOfActiveSessions?: number;
+  noOfInactiveSessions?: number;
+  noOfUnsolvedComplaints?: number;
+  totalNoOfMessages?: number;
+  totalNoOfPointRequests?: number;
+  ratios: { [key: string]: string };
 }
 

@@ -1,7 +1,8 @@
 <div class="main-container">
     <div class="points-number-container" [formGroup]="pointsFormGroup">
       <div class="points-button-container" *ngIf="underPayment === false">
-        <input class="point-value" type="number" placeholder="Enter number of points" formControlName="point"> 
+        <label for="point-value-input">Enter number of points</label>
+        <input id="point-value-input" class="point-value" type="number" placeholder="Enter number of points" formControlName="point"> 
         <button type="button" (click)="requestQr()" *ngIf="paymentType === 'upi'">Get QR</button>
         <button type="button" (click)="requestPoints()" *ngIf="paymentType === 'manual'">Request points</button>
       </div>

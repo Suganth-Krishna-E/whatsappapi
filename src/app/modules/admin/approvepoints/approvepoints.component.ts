@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import { PointsService } from '../../../services/points/points.service';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-approvepoints',
@@ -18,7 +19,11 @@ export class ApprovepointsComponent {
   selectedRequestId: string | null = null;
   pointsFormGroup: FormGroup;
 
-  constructor(private pointService: PointsService, private loggedUserService: LoggeduserService) {
+  constructor(
+    private pointService: PointsService, 
+    private loggedUserService: LoggeduserService,
+    private router: Router
+  ) {
     this.pointsFormGroup = new FormGroup({
       message: new FormControl('This is approved by admin')
     });
@@ -28,6 +33,12 @@ export class ApprovepointsComponent {
   }
 
   ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
+
     this.fetchRequests();
 
     this.selectedUser.valueChanges.subscribe(
@@ -54,7 +65,7 @@ export class ApprovepointsComponent {
   }
 
   changePointRequestState(request: PointRequest, status: string) {
-    if(request.status === "APPROVED") {
+    if (request.status === "APPROVED") {
       Swal.fire("No changes allowed", "There is no permission to change already approved requests", "warning");
       return;
     }
@@ -73,8 +84,8 @@ export class ApprovepointsComponent {
             this.fetchRequests();
           },
           (error) => {
-            if(error.status === 805)
-            Swal.fire("Error", "Points already approved, Please refresh", "error");
+            if (error.status === 805)
+              Swal.fire("Error", "Points already approved, Please refresh", "error");
           }
         );
       }
@@ -82,8 +93,8 @@ export class ApprovepointsComponent {
   }
 
   formatTime(timestampOrNull: string | null): string {
-    if(timestampOrNull !== null) {
-      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;  
+    if (timestampOrNull !== null) {
+      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;
     }
     else {
       return "";

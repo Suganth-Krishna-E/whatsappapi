@@ -10,7 +10,6 @@ export class DashboardService {
   constructor(private http: HttpClient) { }
 
   getDashboardStatsUser(userId: String | null) {
-    console.log(userId);
     return this.http.get<DashboardResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);
   }
 

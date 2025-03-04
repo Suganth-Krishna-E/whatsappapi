@@ -1,5 +1,5 @@
 .login-container {
-    width: 60%;
+    width: 40%;
     margin: 2rem auto;
     padding: 1.5rem;
     background-color: #fff7f3; /* Light pastel orange */
@@ -83,9 +83,26 @@
   .radio-group {
     display: flex;
     gap: 1rem;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .radio-group input {
     width: 0.8rem;
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  .password-container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .password-container input {
+    width: 90%;
+  }
+
+  .password-container button {
+    width: 10%;
   }

@@ -154,3 +154,7 @@ input[type="radio"]:checked::before {
 .clickable-element {
     cursor: pointer;
 }
+
+button, label {
+    cursor: pointer;
+}

@@ -9,7 +9,6 @@ export class loginUserIdValidator {
     constructor(private userService: UserService ) { }
 
     checkUserId(userType: string): AsyncValidatorFn {
-        console.log(userType);
         if(userType === "admin") {
             return (control: AbstractControl): Observable<ValidationErrors | null> => {
                 if (!control.value) {

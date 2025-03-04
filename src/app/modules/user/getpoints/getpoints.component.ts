@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-getpoints',
@@ -24,7 +25,11 @@ export class GetpointsComponent {
   size = 5;
   totalPages = 0;
 
-  constructor(private pointService: PointsService, private loggedUserService: LoggeduserService) {
+  constructor(
+    private pointService: PointsService, 
+    private loggedUserService: LoggeduserService,
+    private router: Router
+  ) {
     this.pointsFormGroup = new FormGroup({
       point: new FormControl(),
       paymenttype: new FormControl('upi')
@@ -40,6 +45,12 @@ export class GetpointsComponent {
   }
 
   ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
+
     this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe((newValue: String) => {
       this.paymentType = newValue;
     });
@@ -64,10 +75,10 @@ export class GetpointsComponent {
     );
     this.pointService.getAllRequestsByUserId(this.userId, this.page, this.size).subscribe(
       (response: any) => {
-        this.requests = response || []; 
+        this.requests = response || [];
       },
       (error) => {
-        this.requests = []; 
+        this.requests = [];
       }
     );
   }
@@ -119,8 +130,8 @@ export class GetpointsComponent {
   }
 
   formatTime(timestampOrNull: string | null): string {
-    if(timestampOrNull !== null) {
-      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;  
+    if (timestampOrNull !== null) {
+      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;
     }
     else {
       return "";

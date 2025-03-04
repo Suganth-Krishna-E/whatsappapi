@@ -3,23 +3,28 @@
   
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label>User ID</label>
-        <input type="text" formControlName="userId" placeholder="Enter your User ID" />
+        <label for="user-id">User ID</label>
+        <input id="user-id" type="text" formControlName="userId" placeholder="Enter your User ID" />
         <small class="error-text" *ngIf="loginForm.controls['userId'].touched && loginForm.controls['userId'].errors?.['required']">User ID is required.</small>
         <small class="error-text" *ngIf="loginForm.controls['userId'].errors?.['pattern']">Only letters, numbers, `_`, and `$` allowed (7-20 characters).</small>
         <small class="error-text" *ngIf="loginForm.controls['userId'].errors?.['userIdTaken']">This userID is not available in DB.</small>
       </div>
   
       <div class="form-group">
-        <label>Password</label>
-        <input type="password" formControlName="password" placeholder="Enter your password" />
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input id="password" [type]="passwordInputType" formControlName="password" placeholder="Enter your password" />
+          <button type="button" class="eye-button" (click)="togglePasswordVisibility()" ngSkipHydration>
+            <i [ngClass]="passwordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+          </button>
+        </div>
         <small *ngIf="f['password'].invalid && f['password'].touched" class="error-text">
           Password must be at least 8 characters with 1 letter, 1 number, and 1 special character.
         </small>
       </div>
 
       <div class="form-group">
-        <label>User Type</label>
+        <label for="user-selector">User Type</label>
         <div class="radio-group">
             <input id="user-selector" type="radio" formControlName="userType" value="user" />
             <label for="user-selector">User</label>

@@ -22,9 +22,15 @@ export class RegisterwhatsappComponent implements OnInit {
     private whatsappService: WhatsappService,
     private loggedUserService: LoggeduserService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
+
     this.userId = this.loggedUserService.getUserId();
 
     this.whatsappService.getQRCodeObservable().subscribe(qr => {
@@ -32,11 +38,11 @@ export class RegisterwhatsappComponent implements OnInit {
         this.formGroup.controls['qrCode'].setValue(qr);
       }
     });
-    
+
     this.whatsappService.getStatusObservable().subscribe(status => {
       if (status) {
         this.formGroup.controls['statusOfQr'].setValue(status);
-        if(this.formGroup.controls['statusOfQr'].value === "WhatsApp registered successfully!") {
+        if (this.formGroup.controls['statusOfQr'].value === "WhatsApp registered successfully!") {
           this.router.navigate(['/']);
         }
       }
@@ -52,7 +58,7 @@ export class RegisterwhatsappComponent implements OnInit {
     try {
       this.whatsappService.generateQR(this.userId);
     }
-    catch(error) {
+    catch (error) {
       Swal.fire("Error", "Error while getting QR from BackEnd", "error");
     }
   }

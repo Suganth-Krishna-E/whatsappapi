@@ -5,11 +5,11 @@
     </div>
 
     <div class="stats-container">
-        <div class="stat-card" (click)="loadUsersPage()">
+        <div class="stat-card clickable-element" (click)="loadUsersPage()">
             <p>Total Number of Users</p>
             <h2>{{ dashBoardResponse.noOfUsers }}</h2>
         </div>
-        <div class="stat-card" (click)="loadComplaintsPage()">
+        <div class="stat-card clickable-element" (click)="loadComplaintsPage()">
             <p>Total number of complaints</p>
             <h2>{{ dashBoardResponse.noOfUnsolvedComplaints }}</h2>
         </div>

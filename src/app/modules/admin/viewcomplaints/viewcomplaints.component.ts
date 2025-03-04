@@ -48,6 +48,12 @@ export class ViewcomplaintsComponent {
   }
 
   ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
+
     this.userSearchControl.valueChanges
       .pipe(
         debounceTime(5000)
@@ -79,7 +85,6 @@ export class ViewcomplaintsComponent {
   submitResolvedComplaint() {
     if (this.complaintResolveForm.valid) {
       this.complaintResolveForm.controls['adminId'].setValue(this.loggedUserService.getUserId());
-      console.log(this.complaintResolveForm.value)
       this.complaintService.resolveComplaint(this.complaintResolveForm.value).subscribe(
         () => {
           Swal.fire('Success', 'Complaint resolved successfully!', 'success');
@@ -123,7 +128,6 @@ export class ViewcomplaintsComponent {
   }
 
   changeSelectedUser(user: String) {
-    // this.userSearchControl.setValue(user.toString());
     this.selectedUser = user.toString();
     this.fetchComplaints();
     this.filteredUsers = null;

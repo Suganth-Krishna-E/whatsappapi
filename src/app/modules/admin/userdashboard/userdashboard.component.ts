@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-userdashboard',
@@ -18,26 +19,32 @@ export class UserdashboardComponent {
   ratioArray: { label: string, y: number }[] = [];
 
   constructor(private dashboardService: DashboardService, private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {
-    console.log(this.activatedRoute.paramMap);
     this.activatedRoute.paramMap.subscribe(params => {
       this.userName = params.get('userId');
-      this.getAllMessagesWithRatio();      
-   });
+      this.getAllMessagesWithRatio();
+    });
+  }
+
+  ngOnInit() {
+    if (!this.loggedUserService.getUserId()) {
+      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
+        this.router.navigate(['/login']);
+      });
+    }
   }
 
   getAllMessagesWithRatio() {
     this.dashboardService.getDashboardStatsUser(this.userName).subscribe(
       (response) => {
-        console.log(response);
         this.dashBoardResponse = response;
         this.mapResponseToChart(response);
       },
       (error) => {
-        console.log(error);
+        Swal.fire("Error", error, "error");
       }
     )
   }
-  
+
   mapResponseToChart(inputData: DashboardResponse) {
     if (!inputData || !inputData.ratios) {
       return;
@@ -63,7 +70,7 @@ export class UserdashboardComponent {
     };
   }
 
-  getKeyPage(): void { 
+  getKeyPage(): void {
     this.router.navigate(['../apiinterface'], { relativeTo: this.activatedRoute });
   }
 
@@ -72,7 +79,7 @@ export class UserdashboardComponent {
   }
 
   sessionDataWithColor(): String {
-    if(this.dashBoardResponse?.whatsAppSessionDetail === "active") {
+    if (this.dashBoardResponse?.whatsAppSessionDetail === "active") {
       return "green-session";
     }
     else {
@@ -97,15 +104,15 @@ export class UserdashboardComponent {
 }
 
 interface DashboardResponse {
-  totalBoughtPoints? : number;
-  totalLeftPoints? : number;
-  totalRequestedPoints? : number;
-  apiKeyLastGeneratedDateTime? : String;
-  whatsAppSessionDetail? : String;
-  whatsAppLastRegisteredDateTime? : String;
+  totalBoughtPoints?: number;
+  totalLeftPoints?: number;
+  totalRequestedPoints?: number;
+  apiKeyLastGeneratedDateTime?: String;
+  whatsAppSessionDetail?: String;
+  whatsAppLastRegisteredDateTime?: String;
   sent?: number;
   failed?: number;
-  ratios: { [key: string]: string }; 
+  ratios: { [key: string]: string };
   totalMessages: number;
 }
 

@@ -13,6 +13,8 @@ import Swal from 'sweetalert2';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  passwordVisible: boolean = false;
+  passwordInputType: string = "password";
 
   constructor(
     private fb: FormBuilder, 
@@ -39,6 +41,17 @@ export class LoginComponent {
     )
   }
 
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+    if(this.passwordInputType === "text") {
+      this.passwordInputType = "password";
+    }
+    else {
+      this.passwordInputType = "text";
+    }
+  }
+
+
   navigateToUser(userId: string) {
     this.loggedUserService.setUserId(userId);
     this.router.navigate(['/user']);
@@ -60,7 +73,6 @@ export class LoginComponent {
     this.submitted = true;
 
     if (this.loginForm.valid) {
-      console.log('Login Data:', this.loginForm.value);
       this.userService.loginUser(this.loginForm.value).subscribe(
         (response) => {
           Swal.fire("Success", response, "success");
