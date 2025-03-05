@@ -4,6 +4,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-userdashboard',
@@ -14,33 +15,41 @@ export class UserdashboardComponent {
 
   userName: string | null = "";
   userType: String = "User";
+  subscriptions: Subscription[] = [];
 
   dashBoardResponse: DashboardResponse | null = null;
 
   ratioArray: { label: string, y: number }[] = [];
 
   constructor(private dashboardService: DashboardService, private authService: AuthService, private router: Router, private activatedRoute: ActivatedRoute) {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.userName = params.get('userId');
-      this.getAllMessagesWithRatio();
-    });
+
+    this.subscriptions.push(
+      this.activatedRoute.paramMap.subscribe(params => {
+        this.userName = params.get('userId');
+        this.getAllMessagesWithRatio();
+      })
+    );
   }
 
   ngOnInit() {
     this.authService.checkLoggedIn();
 
+    this.userName = this.authService.getLoggedUserId();
+
   }
 
   getAllMessagesWithRatio() {
-    this.dashboardService.getDashboardStatsUser(this.userName).subscribe(
-      (response) => {
-        this.dashBoardResponse = response;
-        this.mapResponseToChart(response);
-      },
-      (error) => {
-        Swal.fire("Error", error, "error");
-      }
-    )
+    this.subscriptions.push(
+      this.dashboardService.getDashboardStatsUser(this.userName).subscribe(
+        (response) => {
+          this.dashBoardResponse = response;
+          this.mapResponseToChart(response);
+        },
+        (error) => {
+          Swal.fire("Error", error, "error");
+        }
+      )
+    );
   }
 
   mapResponseToChart(inputData: DashboardResponse) {
@@ -98,6 +107,12 @@ export class UserdashboardComponent {
       dataPoints: [...this.ratioArray]
     }]
   };
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
+  }
 
 }
 

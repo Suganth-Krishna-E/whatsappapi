@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -13,6 +13,7 @@ export class WhatsappService {
   private statusSubject = new BehaviorSubject<string | null>(null);
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 0;
+  subscriptions: Subscription[] = [];
 
   private readonly wsUrl = 'ws://localhost:5005'; 
   private readonly apiUrl = 'http://localhost:5004/api/whatsapp/generateQR';
@@ -55,43 +56,45 @@ export class WhatsappService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     try {
-      this.http.post(this.apiUrl, { userId }, { headers }).subscribe(
-        (response: any) => {
-          Swal.fire("QR Code Generated", "Scan the QR code to log in.", "info");
-        },
-        error => {
-          if (error.status === 602) {
-            Swal.fire("Warning", "There is session available for the given userId.", "warning");
-            Swal.fire({
-              title: 'Delete existing session?',
-              text: 'Do you want to the existing session from DB?',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Yes, delete it!',
-              cancelButtonText: 'No, continue',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                this.http.post(this.deleteSessionUrl, { userId }, { headers }).subscribe(
-                  (response: any) => {
-                    this.generateQR(userId);
-                  },
-                  error => {
-                  }
-                );
-              }
-            });
-          } 
-          else if (error.status === 200) {
-            Swal.fire("Sucess", "Session saved to DB sucessfully", "success");
-            this.router.navigate(["user/dashboard"]);
+      this.subscriptions.push(
+        this.http.post(this.apiUrl, { userId }, { headers }).subscribe(
+          (response: any) => {
+            Swal.fire("QR Code Generated", "Scan the QR code to log in.", "info");
+          },
+          error => {
+            if (error.status === 602) {
+              Swal.fire("Warning", "There is session available for the given userId.", "warning");
+              Swal.fire({
+                title: 'Delete existing session?',
+                text: 'Do you want to the existing session from DB?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, continue',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.http.post(this.deleteSessionUrl, { userId }, { headers }).subscribe(
+                    (response: any) => {
+                      this.generateQR(userId);
+                    },
+                    error => {
+                    }
+                  );
+                }
+              });
+            } 
+            else if (error.status === 200) {
+              Swal.fire("Sucess", "Session saved to DB sucessfully", "success");
+              this.router.navigate(["user/dashboard"]);
+            }
+            else if(error.status === 601) {
+              Swal.fire("Warning", "There is no session data found for the given userId", "warning");
+            }
+            else {
+              Swal.fire("Warning", error.message, "warning");
+            }
           }
-          else if(error.status === 601) {
-            Swal.fire("Warning", "There is no session data found for the given userId", "warning");
-          }
-          else {
-            Swal.fire("Warning", error.message, "warning");
-          }
-        }
+        )
       );  
     }
     catch(error) {

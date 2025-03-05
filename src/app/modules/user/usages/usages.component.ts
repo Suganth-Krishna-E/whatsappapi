@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { MessageServiceService } from '../../../services/message/message-service.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-usages',
@@ -11,7 +12,8 @@ import { AuthService } from '../../../services/auth/auth.service';
   styleUrls: ['./usages.component.css']
 })
 export class UsagesComponent {
-  messages: Message[] = [];  // Ensures it's always an array
+  messages: Message[] = []; 
+  subscriptions: Subscription[] = [];
   userId: string | null = null;
   page = 0;
   size = 5;
@@ -25,22 +27,29 @@ export class UsagesComponent {
   ngOnInit() {
     this.authService.checkLoggedIn();
 
+    this.userId = this.authService.getLoggedUserId();
+
     this.fetchMessages();
   }
 
   fetchMessages() {
-    this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.messageService.getMessagesByUser(this.userId, this.page, this.size).subscribe(
-      (response: any) => {
-        this.messages = response || []; 
-      },
-      (error) => {
-        this.messages = []; 
-      }
+    
+    this.subscriptions.push(
+      this.messageService.getMessagesByUser(this.userId, this.page, this.size).subscribe(
+        (response: any) => {
+          this.messages = response || []; 
+        },
+        (error) => {
+          this.messages = []; 
+        }
+      )
     );
   }
 
@@ -69,6 +78,12 @@ export class UsagesComponent {
 
   isErrorStatus(status: string): string {
     return status?.toLowerCase() === 'failed'? "error" : "success";
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 }
 

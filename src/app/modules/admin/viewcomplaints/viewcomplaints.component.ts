@@ -4,7 +4,7 @@ import { ComplaintService } from '../../../services/complaint/complaint.service'
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { debounceTime, switchMap } from 'rxjs';
+import { debounceTime, Subscription, switchMap } from 'rxjs';
 import { UserService } from '../../../services/user/user.service';
 import { AuthService } from '../../../services/auth/auth.service';
 
@@ -26,6 +26,7 @@ export class ViewcomplaintsComponent {
   userSearchControl = new FormControl('');
   filteredUsers: String[] | null = [];
   selectedUser: string | null = null;
+  subscriptions: Subscription[] = [];
 
 
   constructor(
@@ -49,58 +50,70 @@ export class ViewcomplaintsComponent {
   ngOnInit() {
     this.authService.checkLoggedIn();
 
+    this.userId = this.authService.getLoggedUserId();
 
-    this.userSearchControl.valueChanges
+    this.subscriptions.push(
+      this.userSearchControl.valueChanges
       .pipe(
         debounceTime(5000)
       )
       .subscribe(users => {
         this.selectedUser = users;
         this.fetchComplaints();
-      });
+      })
+    );
+    
   }
 
   fetchComplaints() {
     if (!this.selectedUser) return;
 
-    this.complaintService.getTotalPagesCount(this.selectedUser, this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.complaintService.getTotalPagesCount(this.selectedUser, this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.complaintService.getAllComplaintsByUserId(this.selectedUser, this.page, this.size).subscribe(
-      (response: any) => {
-        this.complaints = response || [];
-      },
-      (error) => {
-        this.complaints = [];
-      }
+    
+    this.subscriptions.push(
+      this.complaintService.getAllComplaintsByUserId(this.selectedUser, this.page, this.size).subscribe(
+        (response: any) => {
+          this.complaints = response || [];
+        },
+        (error) => {
+          this.complaints = [];
+        }
+      )
     );
   }
 
   submitResolvedComplaint() {
     if (this.complaintResolveForm.valid) {
       this.complaintResolveForm.controls['adminId'].setValue(this.authService.getLoggedUserId());
-      this.complaintService.resolveComplaint(this.complaintResolveForm.value).subscribe(
-        () => {
-          Swal.fire('Success', 'Complaint resolved successfully!', 'success');
-          this.complaintResolveForm.reset();
-          this.userSearchControl.reset();
-        },
-        (error) => {
-          if (error.status === 200) {
-            Swal.fire("Success", "Complaint resolved sucessfully", "success");
+      this.subscriptions.push(
+        this.complaintService.resolveComplaint(this.complaintResolveForm.value).subscribe(
+          () => {
+            Swal.fire('Success', 'Complaint resolved successfully!', 'success');
             this.complaintResolveForm.reset();
             this.userSearchControl.reset();
+          },
+          (error) => {
+            if (error.status === 200) {
+              Swal.fire("Success", "Complaint resolved sucessfully", "success");
+              this.complaintResolveForm.reset();
+              this.userSearchControl.reset();
+            }
+            else if (error.status === 701) {
+              Swal.fire("Failed", "The complaint data is invalid", "warning");
+            }
+            else {
+              Swal.fire('Error', 'Failed to register complaint', 'error');
+            }
           }
-          else if (error.status === 701) {
-            Swal.fire("Failed", "The complaint data is invalid", "warning");
-          }
-          else {
-            Swal.fire('Error', 'Failed to register complaint', 'error');
-          }
-        }
+        )
       );
+      
     }
   }
 
@@ -148,11 +161,18 @@ export class ViewcomplaintsComponent {
 
   formatTime(timestampOrNull: string | null): string {
     if (timestampOrNull !== null) {
-      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;
-    }
-    else {
+      const localDate = new Date(timestampOrNull);
+      return `${localDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}  
+              ${localDate.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    } else {
       return "";
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 }
 

@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-complaint',
@@ -20,6 +21,7 @@ export class ComplaintComponent {
   page = 0;
   size = 5;
   totalPages = 0;
+  subscriptions: Subscription[] = [];
 
 
   constructor(
@@ -38,6 +40,8 @@ export class ComplaintComponent {
   ngOnInit() {
     this.authService.checkLoggedIn();
 
+    this.userId = this.authService.getLoggedUserId();
+
     this.fetchComplaints();
     this.loadCategories();
   }
@@ -47,44 +51,52 @@ export class ComplaintComponent {
   }
 
   fetchComplaints() {
-    this.complaintService.getTotalPagesCount(this.userId, this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.complaintService.getTotalPagesCount(this.userId, this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.complaintService.getAllComplaintsByUserId(this.userId, this.page, this.size).subscribe(
-      (response: any) => {
-        this.complaints = response || []; 
-      },
-      (error) => {
-        this.complaints = []; 
-      }
+    
+    this.subscriptions.push(
+      this.complaintService.getAllComplaintsByUserId(this.userId, this.page, this.size).subscribe(
+        (response: any) => {
+          this.complaints = response || []; 
+        },
+        (error) => {
+          this.complaints = []; 
+        }
+      )
     );
+    
   }
 
 
   submitComplaint() {
     if (this.complaintForm.valid) {
       this.complaintForm.controls['userId'].setValue(this.authService.getLoggedUserId());
-      this.complaintService.registerComplaint(this.complaintForm.value).subscribe(
-        () => {
-          Swal.fire('Success', 'Complaint registered successfully!', 'success');
-          this.complaintForm.reset();
-          this.fetchComplaints(); 
-        },
-        (error) => {
-          if(error.status === 200) {
-            Swal.fire("Success", "Complaint registered sucessfully", "success");
+      this.subscriptions.push(
+        this.complaintService.registerComplaint(this.complaintForm.value).subscribe(
+          () => {
+            Swal.fire('Success', 'Complaint registered successfully!', 'success');
             this.complaintForm.reset();
             this.fetchComplaints(); 
+          },
+          (error) => {
+            if(error.status === 200) {
+              Swal.fire("Success", "Complaint registered sucessfully", "success");
+              this.complaintForm.reset();
+              this.fetchComplaints(); 
+            }
+            else if(error.status === 701) {
+              Swal.fire("Failed", "The complaint data is invalid", "warning");
+            }
+            else {
+              Swal.fire('Error', 'Failed to register complaint', 'error');
+            }
           }
-          else if(error.status === 701) {
-            Swal.fire("Failed", "The complaint data is invalid", "warning");
-          }
-          else {
-            Swal.fire('Error', 'Failed to register complaint', 'error');
-          }
-        }
+        )
       );
     }
   }
@@ -124,6 +136,12 @@ export class ComplaintComponent {
     else {
       return "";
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 }
 

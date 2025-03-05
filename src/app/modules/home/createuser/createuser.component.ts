@@ -4,6 +4,7 @@ import { UserService } from '../../../services/user/user.service';
 import { UserIdValidator } from '../../../validators/user-id.validator';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-createuser',
@@ -14,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CreateuserComponent {
   registerForm: FormGroup;
   submitted = false;
+  subscriptions: Subscription[] = [];
 
   constructor(
       private fb: FormBuilder,
@@ -40,21 +42,23 @@ export class CreateuserComponent {
     this.submitted = true;
 
     if (this.registerForm.valid) {
-      this.userService.createUser(this.registerForm.value).subscribe(
-        (response) => {
-          Swal.fire("User created", response.message, "success");
-        },
-        (error) => {
-          if(error.status === 200) {
-            Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
-            this.router.navigate(['../login'], { relativeTo: this.activatedRoute });
-            this.registerForm.reset();
+      this.subscriptions.push(
+        this.userService.createUser(this.registerForm.value).subscribe(
+          (response) => {
+            Swal.fire("User created", response.message, "success");
+          },
+          (error) => {
+            if(error.status === 200) {
+              Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
+              this.router.navigate(['../login'], { relativeTo: this.activatedRoute });
+              this.registerForm.reset();
+            }
+            else {
+              Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
+            }
           }
-          else {
-            Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
-          }
-        }
-      )
+        )
+      );
       this.submitted = false;
     }
     else {

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admindashboard',
@@ -16,6 +16,8 @@ export class AdmindashboardComponent {
   userType: String = "Admin";
 
   dashBoardResponse: DashboardResponse | null = null;
+
+  subscriptions: Subscription[] = [];
 
   ratioArray: { label: string, y: number }[] = [];
 
@@ -30,18 +32,22 @@ export class AdmindashboardComponent {
 
   ngOnInit() {
     this.authService.checkLoggedIn();
+
+    this.userName = this.authService.getLoggedUserId();
   }
 
   getAllMessagesWithRatio() {
-    this.dashboardService.getDashboardStatsAdmin().subscribe(
-      (response: DashboardResponse) => {
-        this.dashBoardResponse = response;
-        this.mapResponseToChart(response);
-      },
-      (error) => {
-        Swal.fire("Error", error, "error");
-      }
-    )
+    this.subscriptions.push(
+      this.dashboardService.getDashboardStatsAdmin().subscribe(
+        (response: DashboardResponse) => {
+          this.dashBoardResponse = response;
+          this.mapResponseToChart(response);
+        },
+        (error) => {
+          Swal.fire("Error", error, "error");
+        }
+      )
+    );
   }
 
   mapResponseToChart(inputData: DashboardResponse) {
@@ -89,6 +95,12 @@ export class AdmindashboardComponent {
 
   loadComplaintsPage() {
     this.router.navigate(['../complaints'], { relativeTo: this.activatedRoute });
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 
 }

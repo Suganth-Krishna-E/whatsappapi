@@ -5,6 +5,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-apiinterface',
@@ -13,9 +14,10 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class ApiinterfaceComponent {
   apiKey: String | null;
+  subscriptions: Subscription[] = [];
 
   constructor(
-    private apiKeyServie: ApikeyService, 
+    private apiKeyServie: ApikeyService,
     private authService: AuthService,
   ) {
     this.apiKey = null;
@@ -31,37 +33,47 @@ export class ApiinterfaceComponent {
   }
 
   regenerateAPIKey() {
-    this.apiKeyServie.regenerateApiKey(this.authService.getLoggedUserId()).subscribe(
-      (response) => {
-        if (response)
-        this.fetchKey();
-      },
-      (error) => {
-        Swal.fire("Error", error, "error");
-        this.fetchKey();
-      }
+    this.subscriptions.push(
+      this.apiKeyServie.regenerateApiKey(this.authService.getLoggedUserId()).subscribe(
+        (response) => {
+          if (response)
+            this.fetchKey();
+        },
+        (error) => {
+          Swal.fire("Error", error, "error");
+          this.fetchKey();
+        }
+      )
     );
   }
 
   fetchKey() {
-    this.apiKeyServie.getCurrentApiKey(this.authService.getLoggedUserId()).subscribe(
-      (response: ApiKeyResponse) => {
-        Swal.fire("Success", "API Key fetched", "success");
-        this.apiKey = response.apiKey;
-      },
-      (error) => {
-        if (error.status === 200) {
+    this.subscriptions.push(
+      this.apiKeyServie.getCurrentApiKey(this.authService.getLoggedUserId()).subscribe(
+        (response: ApiKeyResponse) => {
           Swal.fire("Success", "API Key fetched", "success");
-          this.apiKey = error.error;
-        } else if (error.status === 410) {
-          Swal.fire("Failed", "The user is not available in the backend", "warning");
-        } else if (error.status === 901) {
-          Swal.fire("No Key Found", "Please generate an API key first", "warning");
-        } else {
-          Swal.fire("Error", error.message, "error");
+          this.apiKey = response.apiKey;
+        },
+        (error) => {
+          if (error.status === 200) {
+            Swal.fire("Success", "API Key fetched", "success");
+            this.apiKey = error.error;
+          } else if (error.status === 410) {
+            Swal.fire("Failed", "The user is not available in the backend", "warning");
+          } else if (error.status === 901) {
+            Swal.fire("No Key Found", "Please generate an API key first", "warning");
+          } else {
+            Swal.fire("Error", error.message, "error");
+          }
         }
-      }
+      )
     );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 
 }

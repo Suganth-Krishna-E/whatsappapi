@@ -4,6 +4,7 @@ import { UserService } from '../../../services/user/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-viewusers',
@@ -16,6 +17,7 @@ export class ViewusersComponent {
   size = 5;
   totalPages = 0;
   userId: string | null = null;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
@@ -29,23 +31,31 @@ export class ViewusersComponent {
   ngOnInit() {
     this.authService.checkLoggedIn();
 
+    this.userId = this.authService.getLoggedUserId();
+
     this.fetchUsers();
   }
 
   fetchUsers() {
-    this.userService.getTotalPagesCount(this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.userService.getTotalPagesCount(this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.userService.getAllUsers(this.page, this.size).subscribe(
-      (response: any) => {
-        this.users = response || []; 
-      },
-      () => {
-        this.users = []; 
-      }
+    
+    this.subscriptions.push(
+      this.userService.getAllUsers(this.page, this.size).subscribe(
+        (response: any) => {
+          this.users = response || []; 
+        },
+        () => {
+          this.users = []; 
+        }
+      )
     );
+    
   }
 
   loadUserDashBoard(userId: string) {
@@ -73,6 +83,12 @@ export class ViewusersComponent {
     else {
       return "";
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 
 }

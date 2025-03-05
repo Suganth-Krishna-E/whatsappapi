@@ -5,6 +5,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-registerwhatsapp',
@@ -16,6 +17,7 @@ export class RegisterwhatsappComponent implements OnInit {
     qrCode: new FormControl(null),
     statusOfQr: new FormControl(null)
   });
+  subscriptions: Subscription[] = [];
 
   userId!: string | null;
 
@@ -30,20 +32,24 @@ export class RegisterwhatsappComponent implements OnInit {
 
     this.userId = this.authService.getLoggedUserId();
 
-    this.whatsappService.getQRCodeObservable().subscribe(qr => {
-      if (qr) {
-        this.formGroup.controls['qrCode'].setValue(qr);
-      }
-    });
-
-    this.whatsappService.getStatusObservable().subscribe(status => {
-      if (status) {
-        this.formGroup.controls['statusOfQr'].setValue(status);
-        if (this.formGroup.controls['statusOfQr'].value === "WhatsApp registered successfully!") {
-          this.router.navigate(['/']);
+    this.subscriptions.push(
+      this.whatsappService.getQRCodeObservable().subscribe(qr => {
+        if (qr) {
+          this.formGroup.controls['qrCode'].setValue(qr);
         }
-      }
-    });
+      })
+    );
+
+    this.subscriptions.push(
+      this.whatsappService.getStatusObservable().subscribe(status => {
+        if (status) {
+          this.formGroup.controls['statusOfQr'].setValue(status);
+          if (this.formGroup.controls['statusOfQr'].value === "WhatsApp registered successfully!") {
+            this.router.navigate(['/']);
+          }
+        }
+      })
+    );
   }
 
   generateQR() {
@@ -58,5 +64,11 @@ export class RegisterwhatsappComponent implements OnInit {
     catch (error) {
       Swal.fire("Error", "Error while getting QR from BackEnd", "error");
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 }

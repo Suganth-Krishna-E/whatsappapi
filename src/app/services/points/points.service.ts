@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -17,6 +17,7 @@ export class PointsService {
   private readonly wsUrl = 'ws://localhost:5007';
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 0;
+  subscriptions: Subscription[] = [];
 
 
   constructor(private http: HttpClient, private authService: AuthService) {
@@ -56,17 +57,19 @@ export class PointsService {
   }
 
   requestPoints(points: number): String {
-    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points }).subscribe(
-      (error: any) => {
-        if (error.status === 410) {
-          Swal.fire("Error", "User not available", "error");
-          return "User not avilable";
+    this.subscriptions.push(
+      this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points }).subscribe(
+        (error: any) => {
+          if (error.status === 410) {
+            Swal.fire("Error", "User not available", "error");
+            return "User not avilable";
+          }
+          else {
+            Swal.fire("Error", error.message, "error");
+            return error.message;
+          }
         }
-        else {
-          Swal.fire("Error", error.message, "error");
-          return error.message;
-        }
-      }
+      )
     );
     return "Request placed";
   }

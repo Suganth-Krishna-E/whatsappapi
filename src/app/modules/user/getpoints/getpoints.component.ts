@@ -19,7 +19,7 @@ export class GetpointsComponent {
   pointsFormGroup: FormGroup;
   paymentType: String = "upi";
   underPayment: boolean = false;
-  private subscriptions: Array<Subscription> = [];
+  subscriptions: Subscription[] = [];
   requests: PointRequest[] = [];
   private userId: String | null;
   page = 0;
@@ -39,59 +39,72 @@ export class GetpointsComponent {
 
     this.fetchRequests();
 
-    this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe(() => {
-      this.fetchRequests();
-    });
+    this.subscriptions.push(
+      this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe(() => {
+        this.fetchRequests();
+      })
+    );
   }
 
   ngOnInit() {
     this.authService.checkLoggedIn();
 
-    this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe((newValue: String) => {
-      this.paymentType = newValue;
-    });
+    this.subscriptions.push(
+      this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe((newValue: String) => {
+        this.paymentType = newValue;
+      })
+    );
 
-    this.pointService.getStatusObservable().subscribe(status => {
-      if (status) {
-        this.paymentStatus = status;
-      }
-    });
+    this.subscriptions.push(
+      this.pointService.getStatusObservable().subscribe(status => {
+        if (status) {
+          this.paymentStatus = status;
+        }
+      })
+    );
 
-    this.subscriptions.push(this.pointService.statusSubject.subscribe(newValue => {
+    this.subscriptions.push(
+      this.pointService.statusSubject.subscribe(newValue => {
       this.checkPaymentStatus(newValue);
     }));
   }
 
 
   fetchRequests() {
-    this.pointService.getTotalPagesCount(this.userId, this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.pointService.getTotalPagesCount(this.userId, this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.pointService.getAllRequestsByUserId(this.userId, this.page, this.size).subscribe(
-      (response: any) => {
-        this.requests = response || [];
-      },
-      (error) => {
-        this.requests = [];
-      }
+    this.subscriptions.push(
+      this.pointService.getAllRequestsByUserId(this.userId, this.page, this.size).subscribe(
+        (response: any) => {
+          this.requests = response || [];
+        },
+        (error) => {
+          this.requests = [];
+        }
+      )
     );
   }
 
   requestQr() {
     this.paymentStatus = "Creating QR";
     this.underPayment = true;
-    this.pointService.requestQr(this.pointsFormGroup.controls['point'].value).subscribe(
-      (response: QrCodeData) => {
-        this.paymentStatus = null;
-        this.qrCode = response.qr_code_url;
-        this.orderId = response.order_id;
-        this.pointService.setOrderId(this.orderId);
-      },
-      (error) => {
-        Swal.fire("Error", error.message, "error");
-      }
+    this.subscriptions.push(
+      this.pointService.requestQr(this.pointsFormGroup.controls['point'].value).subscribe(
+        (response: QrCodeData) => {
+          this.paymentStatus = null;
+          this.qrCode = response.qr_code_url;
+          this.orderId = response.order_id;
+          this.pointService.setOrderId(this.orderId);
+        },
+        (error) => {
+          Swal.fire("Error", error.message, "error");
+        }
+      )
     );
   }
 
@@ -127,9 +140,10 @@ export class GetpointsComponent {
 
   formatTime(timestampOrNull: string | null): string {
     if (timestampOrNull !== null) {
-      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;
-    }
-    else {
+      const localDate = new Date(timestampOrNull);
+      return `${localDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}  
+              ${localDate.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    } else {
       return "";
     }
   }

@@ -7,6 +7,7 @@ import { UserIdValidator } from '../../../validators/user-id.validator';
 import { loginUserIdValidator } from '../../../validators/login-user-id.validator';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 export class LoginComponent {
   passwordVisible: boolean = false;
   passwordInputType: string = "password";
+  subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder, 
@@ -32,13 +34,16 @@ export class LoginComponent {
 
     this.loginForm.controls['userId'].addAsyncValidators([this.loginUserIdValidator.checkUserId(this.loginForm.controls['userType'].value)]);
 
-    this.loginForm.controls['userType'].valueChanges.subscribe(
-      (newValue) => {
-        this.loginForm.controls['userId'].clearAsyncValidators();
-        this.loginForm.controls['userId'].addAsyncValidators([this.loginUserIdValidator.checkUserId(newValue)]);
-        this.loginForm.controls['userId'].updateValueAndValidity({ onlySelf: true, emitEvent: false });
-      }
-    )
+    this.subscriptions.push(
+      this.loginForm.controls['userType'].valueChanges.subscribe(
+        (newValue) => {
+          this.loginForm.controls['userId'].clearAsyncValidators();
+          this.loginForm.controls['userId'].addAsyncValidators([this.loginUserIdValidator.checkUserId(newValue)]);
+          this.loginForm.controls['userId'].updateValueAndValidity({ onlySelf: true, emitEvent: false });
+        }
+      )
+    );
+    
   }
 
   togglePasswordVisibility() {
@@ -63,28 +68,15 @@ export class LoginComponent {
 
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value);
-    //   this.userService.loginUser(this.loginForm.value).subscribe(
-    //     (response) => {
-    //       Swal.fire("Success", response, "success");
-    //     },
-    //     (error) => {
-    //       if(error.status === 200) {
-    //         Swal.fire("Success", "Login Successful!", "success");
-    //         if(this.loginForm.controls['userType'].value === "admin") {
-    //           this.navigateToAdmin(this.loginForm.controls['userId'].value);
-    //         }
-    //         else {
-    //           this.navigateToUser(this.loginForm.controls['userId'].value);
-    //         }
-    //       }
-    //       else {
-    //         Swal.fire("Error", "Invalid UserID or Password", "error");
-    //       }
-    //     }
-    //   );
     } else {
       Swal.fire("Error", "Please enter valid details", "error");
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 
 }

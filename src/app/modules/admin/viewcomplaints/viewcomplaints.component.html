@@ -73,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let complaint of complaints" (click)="changeToResolveComplaint(complaint)">
+                <tr class="clickable-element" *ngFor="let complaint of complaints" (click)="changeToResolveComplaint(complaint)">
                     <td>{{ complaint?.id }}</td>
                     <td>{{ complaint?.category }}</td>
                     <td [ngClass]="resolvedStatus(complaint.status)">

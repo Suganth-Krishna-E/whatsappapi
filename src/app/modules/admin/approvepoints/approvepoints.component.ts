@@ -5,6 +5,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-approvepoints',
@@ -19,9 +20,10 @@ export class ApprovepointsComponent {
   selectedUser: FormControl;
   selectedRequestId: string | null = null;
   pointsFormGroup: FormGroup;
+  subscriptions: Subscription[] = [];
 
   constructor(
-    private pointService: PointsService, 
+    private pointService: PointsService,
     private authService: AuthService,
   ) {
     this.pointsFormGroup = new FormGroup({
@@ -37,27 +39,34 @@ export class ApprovepointsComponent {
 
     this.fetchRequests();
 
-    this.selectedUser.valueChanges.subscribe(
+    this.subscriptions.push(this.selectedUser.valueChanges.subscribe(
       (newValue) => {
-        this.fetchRequests();
-      }
-    )
+          this.fetchRequests();
+        }
+      )
+    );
   }
 
   fetchRequests() {
-    this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
-      (response: any) => {
-        this.totalPages = response || 1;
-      }
+    this.subscriptions.push(
+      this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
+        (response: any) => {
+          this.totalPages = response || 1;
+        }
+      )
     );
-    this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
-      (response: any) => {
-        this.requests = response || [];
-      },
-      () => {
-        this.requests = [];
-      }
+    
+    this.subscriptions.push(
+      this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
+        (response: any) => {
+          this.requests = response || [];
+        },
+        () => {
+          this.requests = [];
+        }
+      )
     );
+    
   }
 
   changePointRequestState(request: PointRequest, status: string) {
@@ -74,15 +83,17 @@ export class ApprovepointsComponent {
       cancelButtonText: 'No, continue',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.pointService.changeRequestStatus(request.id, status, this.pointsFormGroup.controls['message'].value).subscribe(
-          (response) => {
-            Swal.fire("Status changed", `The request for point changes to ${status}`, "success");
-            this.fetchRequests();
-          },
-          (error) => {
-            if (error.status === 805)
-              Swal.fire("Error", "Points already approved, Please refresh", "error");
-          }
+        this.subscriptions.push(
+          this.pointService.changeRequestStatus(request.id, status, this.pointsFormGroup.controls['message'].value).subscribe(
+            (response) => {
+              Swal.fire("Status changed", `The request for point changes to ${status}`, "success");
+              this.fetchRequests();
+            },
+            (error) => {
+              if (error.status === 805)
+                Swal.fire("Error", "Points already approved, Please refresh", "error");
+            }
+          )
         );
       }
     });
@@ -90,12 +101,13 @@ export class ApprovepointsComponent {
 
   formatTime(timestampOrNull: string | null): string {
     if (timestampOrNull !== null) {
-      return `${new Date(timestampOrNull).toLocaleDateString('en-US', { hour12: false })}  ${new Date(timestampOrNull).toLocaleTimeString('en-US', { hour12: false })}`;
-    }
-    else {
+      const localDate = new Date(timestampOrNull);
+      return `${localDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' })}  
+              ${localDate.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    } else {
       return "";
     }
-  }
+  }  
 
   nextPage() {
     if (this.page < this.totalPages - 1) {
@@ -109,6 +121,12 @@ export class ApprovepointsComponent {
       this.page--;
       this.fetchRequests();
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subsriptionValue => {
+      subsriptionValue.unsubscribe();
+    });
   }
 
 }
