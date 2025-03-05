@@ -3,6 +3,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { MessageServiceService } from '../../../services/message/message-service.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-usages',
@@ -18,19 +19,13 @@ export class UsagesComponent {
 
   constructor(
     private messageService: MessageServiceService,
-    private loggedUserService: LoggeduserService,
-    private router: Router
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
-    this.userId = this.loggedUserService.getUserId();
-    if (!this.userId) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    } else {
-      this.fetchMessages();
-    }
+    this.authService.checkLoggedIn();
+
+    this.fetchMessages();
   }
 
   fetchMessages() {

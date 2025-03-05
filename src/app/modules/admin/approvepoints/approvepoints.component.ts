@@ -4,6 +4,7 @@ import { PointsService } from '../../../services/points/points.service';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-approvepoints',
@@ -21,8 +22,7 @@ export class ApprovepointsComponent {
 
   constructor(
     private pointService: PointsService, 
-    private loggedUserService: LoggeduserService,
-    private router: Router
+    private authService: AuthService,
   ) {
     this.pointsFormGroup = new FormGroup({
       message: new FormControl('This is approved by admin')
@@ -33,11 +33,7 @@ export class ApprovepointsComponent {
   }
 
   ngOnInit() {
-    if (!this.loggedUserService.getUserId()) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
 
     this.fetchRequests();
 

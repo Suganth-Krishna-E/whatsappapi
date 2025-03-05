@@ -3,6 +3,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-admindashboard',
@@ -19,7 +20,7 @@ export class AdmindashboardComponent {
   ratioArray: { label: string, y: number }[] = [];
 
   constructor(
-    private loggedUserService: LoggeduserService,
+    private authService: AuthService,
     private dashboardService: DashboardService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -28,11 +29,7 @@ export class AdmindashboardComponent {
   }
 
   ngOnInit() {
-    if (!this.loggedUserService.getUserId()) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
   }
 
   getAllMessagesWithRatio() {

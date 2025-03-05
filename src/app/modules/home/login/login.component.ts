@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserIdValidator } from '../../../validators/user-id.validator';
 import { loginUserIdValidator } from '../../../validators/login-user-id.validator';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +20,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder, 
     private userService: UserService, 
-    private router: Router, 
-    private loggedUserService: LoggeduserService,
+    private authService: AuthService,
     private loginUserIdValidator: loginUserIdValidator
   ) {
     this.loginForm = this.fb.group({
@@ -51,17 +51,6 @@ export class LoginComponent {
     }
   }
 
-
-  navigateToUser(userId: string) {
-    this.loggedUserService.setUserId(userId);
-    this.router.navigate(['/user']);
-  }
-
-  navigateToAdmin(adminId: string) {
-    this.loggedUserService.setUserId(adminId);
-    this.router.navigate(['/admin']);
-  }
-
   loginForm: FormGroup;
   submitted = false;
 
@@ -73,25 +62,26 @@ export class LoginComponent {
     this.submitted = true;
 
     if (this.loginForm.valid) {
-      this.userService.loginUser(this.loginForm.value).subscribe(
-        (response) => {
-          Swal.fire("Success", response, "success");
-        },
-        (error) => {
-          if(error.status === 200) {
-            Swal.fire("Success", "Login Successful!", "success");
-            if(this.loginForm.controls['userType'].value === "admin") {
-              this.navigateToAdmin(this.loginForm.controls['userId'].value);
-            }
-            else {
-              this.navigateToUser(this.loginForm.controls['userId'].value);
-            }
-          }
-          else {
-            Swal.fire("Error", "Invalid UserID or Password", "error");
-          }
-        }
-      );
+      this.authService.login(this.loginForm.value);
+    //   this.userService.loginUser(this.loginForm.value).subscribe(
+    //     (response) => {
+    //       Swal.fire("Success", response, "success");
+    //     },
+    //     (error) => {
+    //       if(error.status === 200) {
+    //         Swal.fire("Success", "Login Successful!", "success");
+    //         if(this.loginForm.controls['userType'].value === "admin") {
+    //           this.navigateToAdmin(this.loginForm.controls['userId'].value);
+    //         }
+    //         else {
+    //           this.navigateToUser(this.loginForm.controls['userId'].value);
+    //         }
+    //       }
+    //       else {
+    //         Swal.fire("Error", "Invalid UserID or Password", "error");
+    //       }
+    //     }
+    //   );
     } else {
       Swal.fire("Error", "Please enter valid details", "error");
     }

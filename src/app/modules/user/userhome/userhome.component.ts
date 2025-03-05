@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-userhome',
@@ -11,24 +12,19 @@ import Swal from 'sweetalert2';
 export class UserhomeComponent {
   userName: string | null = null;
   
-    constructor(private loggedUserService: LoggeduserService, private router: Router, private activatedRoute: ActivatedRoute) {}
+    constructor(private authService: AuthService, private router: Router, private activatedRoute: ActivatedRoute) {}
   
     ngOnInit(): void {
-      this.userName = this.loggedUserService.getUserId();
-      
-      if (!this.userName) {
-        Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-          this.router.navigate(['/login']);
-        });
-      }
+      this.authService.checkLoggedIn();
+
+      this.userName = this.authService.getLoggedUserId();
     }
 
     loadUserDashboard() {
-      this.router.navigate([`./dashboard/${this.loggedUserService.getUserId()}`], { relativeTo: this.activatedRoute });
+      this.router.navigate([`./dashboard/${this.authService.getLoggedUserId()}`], { relativeTo: this.activatedRoute });
     }
 
     logout() {
-      this.loggedUserService.setUserId(null);
-      this.router.navigate(['/login']);
+      this.authService.logout();
     }
 }

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { debounceTime, switchMap } from 'rxjs';
 import { UserService } from '../../../services/user/user.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 
 @Component({
@@ -28,11 +29,9 @@ export class ViewcomplaintsComponent {
 
 
   constructor(
-    private loggedUserService: LoggeduserService,
+    private authService: AuthService,
     private complaintService: ComplaintService,
-    private router: Router,
     private fb: FormBuilder,
-    private userService: UserService
   ) {
     this.complaintResolveForm = this.fb.group({
       id: [''],
@@ -42,17 +41,14 @@ export class ViewcomplaintsComponent {
       message: [''],
       adminMessage: ['', Validators.required],
       status: [''],
-      adminId: [this.loggedUserService.getUserId()]
+      adminId: [this.authService.getLoggedUserId()]
     });
     this.viewSelector = "resolve";
   }
 
   ngOnInit() {
-    if (!this.loggedUserService.getUserId()) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
+
 
     this.userSearchControl.valueChanges
       .pipe(
@@ -84,7 +80,7 @@ export class ViewcomplaintsComponent {
 
   submitResolvedComplaint() {
     if (this.complaintResolveForm.valid) {
-      this.complaintResolveForm.controls['adminId'].setValue(this.loggedUserService.getUserId());
+      this.complaintResolveForm.controls['adminId'].setValue(this.authService.getLoggedUserId());
       this.complaintService.resolveComplaint(this.complaintResolveForm.value).subscribe(
         () => {
           Swal.fire('Success', 'Complaint resolved successfully!', 'success');

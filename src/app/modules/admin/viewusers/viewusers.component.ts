@@ -3,6 +3,7 @@ import { LoggeduserService } from '../../../services/loggeduser/loggeduser.servi
 import { UserService } from '../../../services/user/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-viewusers',
@@ -17,7 +18,7 @@ export class ViewusersComponent {
   userId: string | null = null;
 
   constructor(
-    private loggedUserService: LoggeduserService,
+    private authService: AuthService,
     private userService: UserService,
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -26,14 +27,9 @@ export class ViewusersComponent {
   }
 
   ngOnInit() {
-    this.userId = this.loggedUserService.getUserId();
-    if (!this.userId) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    } else {
-      this.fetchUsers();
-    }
+    this.authService.checkLoggedIn();
+
+    this.fetchUsers();
   }
 
   fetchUsers() {

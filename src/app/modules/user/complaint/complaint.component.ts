@@ -4,6 +4,7 @@ import { ComplaintService } from '../../../services/complaint/complaint.service'
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-complaint',
@@ -22,9 +23,8 @@ export class ComplaintComponent {
 
 
   constructor(
-    private loggedUserService: LoggeduserService, 
+    private authService: AuthService, 
     private complaintService: ComplaintService,
-    private router: Router,
     private fb: FormBuilder
     ) {
       this.complaintForm = this.fb.group({
@@ -36,14 +36,9 @@ export class ComplaintComponent {
      }
 
   ngOnInit() {
-    this.userId = this.loggedUserService.getUserId();
-    if (!this.userId) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    } else {
-      this.fetchComplaints();
-    }
+    this.authService.checkLoggedIn();
+
+    this.fetchComplaints();
     this.loadCategories();
   }
 
@@ -70,7 +65,7 @@ export class ComplaintComponent {
 
   submitComplaint() {
     if (this.complaintForm.valid) {
-      this.complaintForm.controls['userId'].setValue(this.loggedUserService.getUserId());
+      this.complaintForm.controls['userId'].setValue(this.authService.getLoggedUserId());
       this.complaintService.registerComplaint(this.complaintForm.value).subscribe(
         () => {
           Swal.fire('Success', 'Complaint registered successfully!', 'success');

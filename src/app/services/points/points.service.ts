@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class PointsService {
   private readonly maxReconnectAttempts = 0;
 
 
-  constructor(private http: HttpClient, private loggedUserService: LoggeduserService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
     this.connectWebSocket();
   }
 
@@ -43,7 +44,7 @@ export class PointsService {
 
 
   requestQr(points: Number) {
-    return this.http.post<QrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points });
+    return this.http.post<QrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points });
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
@@ -55,7 +56,7 @@ export class PointsService {
   }
 
   requestPoints(points: number): String {
-    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.loggedUserService.getUserId(), "pointsRequested": points }).subscribe(
+    this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points }).subscribe(
       (error: any) => {
         if (error.status === 410) {
           Swal.fire("Error", "User not available", "error");
@@ -83,7 +84,7 @@ export class PointsService {
       id: pointRequestId,
       status: status,
       message: message,
-      allocatedBy: this.loggedUserService.getUserId()
+      allocatedBy: this.authService.getLoggedUserId()
     };
 
     return this.http.post(`${this.pointRequestUrl}changeStatus`, pointRequest);

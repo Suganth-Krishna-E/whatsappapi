@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-getpoints',
@@ -27,15 +28,14 @@ export class GetpointsComponent {
 
   constructor(
     private pointService: PointsService, 
-    private loggedUserService: LoggeduserService,
-    private router: Router
+    private authService: AuthService,
   ) {
     this.pointsFormGroup = new FormGroup({
       point: new FormControl(),
       paymenttype: new FormControl('upi')
     });
 
-    this.userId = this.loggedUserService.getUserId();
+    this.userId = this.authService.getLoggedUserId();
 
     this.fetchRequests();
 
@@ -45,11 +45,7 @@ export class GetpointsComponent {
   }
 
   ngOnInit() {
-    if (!this.loggedUserService.getUserId()) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
 
     this.pointsFormGroup.controls['paymenttype'].valueChanges.subscribe((newValue: String) => {
       this.paymentType = newValue;

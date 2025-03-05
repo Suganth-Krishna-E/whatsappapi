@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-adminhome',
@@ -11,21 +12,16 @@ import { Router } from '@angular/router';
 export class AdminhomeComponent {
   userName: string | null = null;
 
-  constructor(private loggedUserService: LoggeduserService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.userName = this.loggedUserService.getUserId();
-    
-    if (!this.userName) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
+
+    this.userName = this.authService.getLoggedUserId();
   }
 
   logout() {
-    this.loggedUserService.setUserId(null);
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
   
 }

@@ -4,6 +4,7 @@ import { WhatsappService } from '../../../services/whatsapp/whatsapp.service';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-registerwhatsapp',
@@ -20,18 +21,14 @@ export class RegisterwhatsappComponent implements OnInit {
 
   constructor(
     private whatsappService: WhatsappService,
-    private loggedUserService: LoggeduserService,
+    private authService: AuthService,
     private router: Router
   ) { }
 
   ngOnInit() {
-    if (!this.loggedUserService.getUserId()) {
-      Swal.fire("Login Error", "User Not Logged In", "error").then(() => {
-        this.router.navigate(['/login']);
-      });
-    }
+    this.authService.checkLoggedIn();
 
-    this.userId = this.loggedUserService.getUserId();
+    this.userId = this.authService.getLoggedUserId();
 
     this.whatsappService.getQRCodeObservable().subscribe(qr => {
       if (qr) {
