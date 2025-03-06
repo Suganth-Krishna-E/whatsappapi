@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize.directive';
+import { RouterLink } from '@angular/router';
 
 
 
@@ -8,7 +9,8 @@ import { TextAreaResizeDirective } from '../../utils/directives/text-area-resize
 @NgModule({
   declarations: [TextAreaResizeDirective],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
   exports: [TextAreaResizeDirective]
 })

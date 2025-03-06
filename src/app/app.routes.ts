@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { UserModule } from './modules/user/user.module';
 import { UserhomeComponent } from './modules/user/userhome/userhome.component';
+import { PagenotfoundComponent } from './modules/sharedmodules/pagenotfound/pagenotfound.component';
 
 export const routes: Routes = [
     {
@@ -16,4 +17,8 @@ export const routes: Routes = [
         path: 'admin',
         loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
       },
+      {
+        path: '**',
+        component: PagenotfoundComponent
+      }
 ];

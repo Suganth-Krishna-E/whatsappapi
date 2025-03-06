@@ -9,7 +9,6 @@ import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedmodulesModule } from '../sharedmodules/sharedmodules.module';
 
-
 @NgModule({
   declarations: [
     LoginComponent,

@@ -76,6 +76,7 @@ export class AuthService {
       if (result.isConfirmed) {
         this.loggedIn.next(false);
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
         this.router.navigate(["/login"]);
       }
     });

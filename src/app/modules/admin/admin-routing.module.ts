@@ -6,6 +6,7 @@ import { UserdashboardComponent } from './userdashboard/userdashboard.component'
 import { ViewusersComponent } from './viewusers/viewusers.component';
 import { ViewcomplaintsComponent } from './viewcomplaints/viewcomplaints.component';
 import { ApprovepointsComponent } from './approvepoints/approvepoints.component';
+import { PagenotfoundComponent } from '../sharedmodules/pagenotfound/pagenotfound.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: 'approvepoints',
         component: ApprovepointsComponent
+      },
+      {
+        path: '**',
+        component: PagenotfoundComponent
       }
     ]
   },

@@ -7,6 +7,7 @@ import { ApiinterfaceComponent } from './apiinterface/apiinterface.component';
 import { GetpointsComponent } from './getpoints/getpoints.component';
 import { ComplaintComponent } from './complaint/complaint.component';
 import { RegisterwhatsappComponent } from './registerwhatsapp/registerwhatsapp.component';
+import { PagenotfoundComponent } from '../sharedmodules/pagenotfound/pagenotfound.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
         path: 'registerwhatsapp',
         component: RegisterwhatsappComponent
       },
+      {
+        path: '**',
+        component: PagenotfoundComponent
+      }
     ]
   }
 ];

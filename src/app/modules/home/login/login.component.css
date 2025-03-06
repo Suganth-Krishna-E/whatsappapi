@@ -106,3 +106,9 @@
   .password-container button {
     width: 10%;
   }
+
+  .eye-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

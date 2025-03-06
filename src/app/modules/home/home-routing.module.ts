@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { CreateuserComponent } from './createuser/createuser.component';
+import { PagenotfoundComponent } from '../sharedmodules/pagenotfound/pagenotfound.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'createuser',
     component: CreateuserComponent
+  },
+  {
+    path: '**',
+    component: PagenotfoundComponent
   }
 ];
 

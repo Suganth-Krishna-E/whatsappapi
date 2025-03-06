@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { UserService } from '../../../services/user/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserIdValidator } from '../../../validators/user-id.validator';
 import { loginUserIdValidator } from '../../../validators/login-user-id.validator';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
