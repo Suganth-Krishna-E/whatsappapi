@@ -16,7 +16,5 @@ export class AppComponent {
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.authService.autoLogin(); 
-  }
+  
 }
