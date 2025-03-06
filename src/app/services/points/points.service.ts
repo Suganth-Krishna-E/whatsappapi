@@ -49,11 +49,11 @@ export class PointsService {
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${userId}?size=${size}`);
+    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/?userId=${userId}&size=${size}`);
   }
 
   getAllRequestsByUserId(userId: String | null, page: number, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/${userId}?page=${page}&size=${size}`);
+    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/?userId=${userId}&page=${page}&size=${size}`);
   }
 
   requestPoints(points: number): String {

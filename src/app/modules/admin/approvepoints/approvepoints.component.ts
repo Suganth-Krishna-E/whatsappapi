@@ -6,6 +6,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { error } from 'console';
 
 @Component({
   selector: 'app-approvepoints',
@@ -52,6 +53,21 @@ export class ApprovepointsComponent {
       this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
         (response: any) => {
           this.totalPages = response || 1;
+        },
+        (error) => {
+          if(error.status === 200) {
+            Swal.fire("Success", error.message, "success");
+          }
+          else if(error.status === 413) {
+            Swal.fire("Error", "JWT token mismatch");
+          }
+          else if(error.status === 414) {
+            Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
+            this.authService.logout();
+          }
+          else {
+            console.log(error);
+          }
         }
       )
     );
@@ -60,6 +76,18 @@ export class ApprovepointsComponent {
       this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
         (response: any) => {
           this.requests = response || [];
+        },
+        (error) => {
+          if(error.status === 413) {
+            Swal.fire("Error", "JWT token mismatch");
+          }
+          else if(error.status === 414) {
+            Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
+            this.authService.logout();
+          }
+          else {
+            console.log(error);
+          }
         },
         () => {
           this.requests = [];

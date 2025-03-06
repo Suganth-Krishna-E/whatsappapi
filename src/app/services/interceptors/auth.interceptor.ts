@@ -23,6 +23,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           Swal.fire("JWT token expired", "Clearing session please login again", "error");
           localStorage.clear();
         }
+        else {
+          console.log(error);
+        }
         return throwError(() => error);
       })
     );
