@@ -1,6 +1,7 @@
 <div class="user-name-selector">
     <label for="user-selector">Select user by ID</label>
     <input id="user-selector" type="text" [formControl]="selectedUser" />
+    <button type="button" id="search-requests" (click)="this.fetchRequests()">Search Requests</button>
 </div>
 
 

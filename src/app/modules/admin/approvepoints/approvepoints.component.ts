@@ -39,13 +39,6 @@ export class ApprovepointsComponent {
     this.authService.checkLoggedIn();
 
     this.fetchRequests();
-
-    this.subscriptions.push(this.selectedUser.valueChanges.subscribe(
-      (newValue) => {
-          this.fetchRequests();
-        }
-      )
-    );
   }
 
   fetchRequests() {
@@ -55,33 +48,29 @@ export class ApprovepointsComponent {
           this.totalPages = response || 1;
         },
         (error) => {
-          if(error.status === 200) {
+          if (error.status === 200) {
             Swal.fire("Success", error.message, "success");
           }
-          else if(error.status === 413) {
-            Swal.fire("Error", "JWT token mismatch");
-          }
-          else if(error.status === 414) {
-            Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
-            this.authService.logout();
+          else if (error.status === 804) {
+            Swal.fire("No Complaints found", "No complaints found for the entered user", "warning");
           }
           else {
-            console.log(error);
+            Swal.fire("Error", error.message, "error");
           }
         }
       )
     );
-    
+
     this.subscriptions.push(
       this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
         (response: any) => {
           this.requests = response || [];
         },
         (error) => {
-          if(error.status === 413) {
+          if (error.status === 413) {
             Swal.fire("Error", "JWT token mismatch");
           }
-          else if(error.status === 414) {
+          else if (error.status === 414) {
             Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
             this.authService.logout();
           }
@@ -94,7 +83,7 @@ export class ApprovepointsComponent {
         }
       )
     );
-    
+
   }
 
   changePointRequestState(request: PointRequest, status: string) {
@@ -135,7 +124,7 @@ export class ApprovepointsComponent {
     } else {
       return "";
     }
-  }  
+  }
 
   nextPage() {
     if (this.page < this.totalPages - 1) {
