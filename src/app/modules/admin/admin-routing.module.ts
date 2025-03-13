@@ -32,10 +32,6 @@ const routes: Routes = [
       {
         path: 'approvepoints',
         component: ApprovepointsComponent
-      },
-      {
-        path: '**',
-        component: PagenotfoundComponent
       }
     ]
   },

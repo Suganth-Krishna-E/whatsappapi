@@ -17,10 +17,6 @@ const routes: Routes = [
   {
     path: 'createuser',
     component: CreateuserComponent
-  },
-  {
-    path: '**',
-    component: PagenotfoundComponent
   }
 ];
 

@@ -37,10 +37,6 @@ const routes: Routes = [
       {
         path: 'registerwhatsapp',
         component: RegisterwhatsappComponent
-      },
-      {
-        path: '**',
-        component: PagenotfoundComponent
       }
     ]
   }
