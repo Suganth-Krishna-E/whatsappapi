@@ -124,6 +124,13 @@ export class PointsService {
   getStatusObservable() {
     return this.statusSubject.asObservable();
   }
+
+  closeWebSocket() {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+  }
 }
 
 interface PointRequest {

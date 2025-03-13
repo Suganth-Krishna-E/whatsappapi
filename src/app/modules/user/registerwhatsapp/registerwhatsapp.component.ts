@@ -70,5 +70,7 @@ export class RegisterwhatsappComponent implements OnInit {
     this.subscriptions.forEach(subsriptionValue => {
       subsriptionValue.unsubscribe();
     });
+
+    this.whatsappService.closeWebSocket();
   }
 }

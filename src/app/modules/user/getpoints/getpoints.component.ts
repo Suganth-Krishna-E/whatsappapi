@@ -166,6 +166,8 @@ export class GetpointsComponent {
     this.subscriptions.forEach(subsriptionValue => {
       subsriptionValue.unsubscribe();
     });
+
+    this.pointService.closeWebSocket();
   }
 
 }

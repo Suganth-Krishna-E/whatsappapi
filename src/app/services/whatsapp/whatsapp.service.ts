@@ -139,4 +139,11 @@ export class WhatsappService {
   getStatusObservable() {
     return this.statusSubject.asObservable();
   }
+
+  closeWebSocket() {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+  }
 }
