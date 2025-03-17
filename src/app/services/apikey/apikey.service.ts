@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApikeyService {
-  private baseUrl = 'http://localhost:5004/api/whatsapp/key/';
+  private baseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiAddressHolder: ApiAddressHolderService) { 
+    this.baseUrl = this.apiAddressHolder.whatsAppKeyUrl;
+  }
 
   getCurrentApiKey(userId: String | null) {
     return this.http.get<ApiKeyResponse>(`${this.baseUrl}getApiKey/${userId}`, { responseType: 'json'});

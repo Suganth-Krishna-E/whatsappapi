@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,19 @@ export class WhatsappService {
   private readonly maxReconnectAttempts = 0;
   subscriptions: Subscription[] = [];
 
-  private readonly wsUrl = 'ws://localhost:5005'; 
-  private readonly apiUrl = 'http://localhost:5004/api/whatsapp/generateQR';
-  private readonly deleteSessionUrl = 'http://localhost:5004/api/whatsapp/deleteSession';
+  private wsUrl; 
+  private apiUrl;
+  private deleteSessionUrl;
 
   constructor(private http: HttpClient, 
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private apiAddressHolder: ApiAddressHolderService
   ) {
+    this.wsUrl = this.apiAddressHolder.whatsAppSessionWebSocketUrl;
+    this.apiUrl = this.apiAddressHolder.generateWhatsAppSessionUrl;
+    this.deleteSessionUrl = this.apiAddressHolder.deleteWhatsAppSessionUrl;
+    
     this.connectWebSocket();
   }
 

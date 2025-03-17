@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { jwtDecode } from "jwt-decode";
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,13 @@ export class AuthService {
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private apiAddressHolder: ApiAddressHolderService
   ) { }
 
   login(login: Login) {
     this.subscriptions.push(
-      this.http.post<any>('http://localhost:5004/api/whatsapp/user/login', login).subscribe(
+      this.http.post<any>(this.apiAddressHolder.userLoginUrl, login).subscribe(
         (response) => {
           Swal.fire("Login Successful", "Navigating to home page", "success");
           const token = response.token;
