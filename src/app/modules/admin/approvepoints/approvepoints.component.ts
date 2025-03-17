@@ -32,7 +32,7 @@ export class ApprovepointsComponent {
     });
 
     this.selectedUser = new FormControl('');
-
+    
   }
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class ApprovepointsComponent {
     this.subscriptions.push(
       this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
         (response: any) => {
-          this.totalPages = response || 1;
+          this.totalPages = response;
         },
         (error) => {
           if (error.status === 200) {
@@ -64,7 +64,7 @@ export class ApprovepointsComponent {
     this.subscriptions.push(
       this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
         (response: any) => {
-          this.requests = response || [];
+          this.requests = response;
         },
         (error) => {
           if (error.status === 413) {
@@ -74,12 +74,12 @@ export class ApprovepointsComponent {
             Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
             this.authService.logout();
           }
+          else if(error.status === 804) {
+            Swal.fire("No Requests", "No point requests found for selected user", "warning");
+          }
           else {
             console.log(error);
           }
-        },
-        () => {
-          this.requests = [];
         }
       )
     );
@@ -158,5 +158,4 @@ interface PointRequest {
   allocatedBy: string;
   requestedOn: string;
   allocatedOn: string;
-
 }

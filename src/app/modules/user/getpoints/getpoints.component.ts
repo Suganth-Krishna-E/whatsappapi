@@ -169,7 +169,6 @@ export class GetpointsComponent {
 
     this.pointService.closeWebSocket();
   }
-
 }
 
 interface QrCodeData {

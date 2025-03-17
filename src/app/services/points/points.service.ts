@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -49,10 +49,10 @@ export class PointsService {
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/?userId=${userId}&size=${size}`);
+    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${size}?userId=${userId}`);
   }
 
-  getAllRequestsByUserId(userId: String | null, page: number, size: number) {
+  getAllRequestsByUserId(userId: String | null, page: number, size: number): Observable<any> {
     return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/?userId=${userId}&page=${page}&size=${size}`);
   }
 
