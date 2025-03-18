@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  private baseUrl = "http://localhost:5004/api/whatsapp/dashboard/"
+  private baseUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiAddressHolder: ApiAddressHolderService) {
+    this.baseUrl = this.apiAddressHolder.dashboardUrl;
+   }
 
   getDashboardStatsUser(userId: String | null) {
     return this.http.get<DashboardResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);

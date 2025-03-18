@@ -6,6 +6,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { error } from 'console';
 
 @Component({
   selector: 'app-approvepoints',
@@ -31,42 +32,58 @@ export class ApprovepointsComponent {
     });
 
     this.selectedUser = new FormControl('');
-
+    
   }
 
   ngOnInit() {
     this.authService.checkLoggedIn();
 
     this.fetchRequests();
-
-    this.subscriptions.push(this.selectedUser.valueChanges.subscribe(
-      (newValue) => {
-          this.fetchRequests();
-        }
-      )
-    );
   }
 
   fetchRequests() {
     this.subscriptions.push(
       this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
         (response: any) => {
-          this.totalPages = response || 1;
+          this.totalPages = response;
+        },
+        (error) => {
+          if (error.status === 200) {
+            Swal.fire("Success", error.message, "success");
+          }
+          else if (error.status === 804) {
+            Swal.fire("No Complaints found", "No complaints found for the entered user", "warning");
+          }
+          else {
+            Swal.fire("Error", error.message, "error");
+          }
         }
       )
     );
-    
+
     this.subscriptions.push(
       this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
         (response: any) => {
-          this.requests = response || [];
+          this.requests = response;
         },
-        () => {
-          this.requests = [];
+        (error) => {
+          if (error.status === 413) {
+            Swal.fire("Error", "JWT token mismatch");
+          }
+          else if (error.status === 414) {
+            Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
+            this.authService.logout();
+          }
+          else if(error.status === 804) {
+            Swal.fire("No Requests", "No point requests found for selected user", "warning");
+          }
+          else {
+            console.log(error);
+          }
         }
       )
     );
-    
+
   }
 
   changePointRequestState(request: PointRequest, status: string) {
@@ -107,7 +124,7 @@ export class ApprovepointsComponent {
     } else {
       return "";
     }
-  }  
+  }
 
   nextPage() {
     if (this.page < this.totalPages - 1) {
@@ -141,5 +158,4 @@ interface PointRequest {
   allocatedBy: string;
   requestedOn: string;
   allocatedOn: string;
-
 }

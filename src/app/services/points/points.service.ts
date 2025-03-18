@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +13,19 @@ export class PointsService {
   private socket: WebSocket | null = null;
   statusSubject = new BehaviorSubject<string | null>(null);
   private orderId: String | null = null;
-  private baseUrl = 'http://localhost:5004/api/whatsapp/points/';
-  private pointRequestUrl = 'http://localhost:5004/api/whatsapp/pointrequest/';
-  private readonly wsUrl = 'ws://localhost:5007';
+  private baseUrl: string;
+  private pointRequestUrl: string;
+  private wsUrl: string;
   private reconnectAttempts = 0;
   private readonly maxReconnectAttempts = 0;
   subscriptions: Subscription[] = [];
 
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private apiAddressService: ApiAddressHolderService) {
+    this.baseUrl = this.apiAddressService.pointsUrl;
+    this.pointRequestUrl = this.apiAddressService.pointRequestUrl;
+    this.wsUrl = this.apiAddressService.paymentWebSocketUrl;
+
     this.connectWebSocket();
   }
 
@@ -49,11 +54,11 @@ export class PointsService {
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${userId}?size=${size}`);
+    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${size}?userId=${userId}`);
   }
 
-  getAllRequestsByUserId(userId: String | null, page: number, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/${userId}?page=${page}&size=${size}`);
+  getAllRequestsByUserId(userId: String | null, page: number, size: number): Observable<any> {
+    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/?userId=${userId}&page=${page}&size=${size}`);
   }
 
   requestPoints(points: number): String {
@@ -123,6 +128,13 @@ export class PointsService {
 
   getStatusObservable() {
     return this.statusSubject.asObservable();
+  }
+
+  closeWebSocket() {
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
   }
 }
 

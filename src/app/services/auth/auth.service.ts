@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +20,13 @@ export class AuthService {
 
   constructor(
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private apiAddressHolder: ApiAddressHolderService
   ) { }
 
   login(login: Login) {
     this.subscriptions.push(
-      this.http.post<any>('http://localhost:5004/api/whatsapp/user/login', login).subscribe(
+      this.http.post<any>(this.apiAddressHolder.userLoginUrl, login).subscribe(
         (response) => {
           Swal.fire("Login Successful", "Navigating to home page", "success");
           const token = response.token;
@@ -83,15 +85,24 @@ export class AuthService {
 
   }
 
-  checkLoggedIn() {
+  checkLoggedIn(): boolean {
     if (this.loggedIn.value === true) {
-      return;
+      return true;
     }
     else {
       Swal.fire("Error", "User not logged in please login to continue", "error").then(() => {
         this.router.navigate(["/login"]);
       });
-      return;
+      return false;
+    }
+  }
+
+  getLoginStatus(): boolean {
+    if(this.loggedIn.value === true) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -104,13 +115,30 @@ export class AuthService {
   autoLogin() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-  
+
     if (token && userId) {
       this.loggedInUserSubject.next(userId);
       this.loggedIn.next(true);
     } else {
       this.loggedIn.next(false);
     }
+  }
+
+
+  getUserRole(): string | null {
+    const token = localStorage.getItem('token');
+
+    let tokenNotNull: string = "null";
+
+    if (token != null) {
+      tokenNotNull = token;
+    }
+
+    let jwtData = tokenNotNull.split('.')[1]
+    let decodedJwtJsonData = window.atob(jwtData)
+    let decodedJwtData = JSON.parse(decodedJwtJsonData)
+
+    return decodedJwtData.roles;
   }
 }
 
@@ -119,3 +147,4 @@ interface Login {
   userType: string;
   password: string;
 }
+
