@@ -41,9 +41,9 @@ export class UserdashboardComponent {
   getAllMessagesWithRatio() {
     this.subscriptions.push(
       this.dashboardService.getDashboardStatsUser(this.userName).subscribe(
-        (response) => {
-          this.dashBoardResponse = response;
-          this.mapResponseToChart(response);
+        (response: APIResponse) => {
+          this.dashBoardResponse = response.response;
+          this.mapResponseToChart(response.response);
         },
         (error) => {
           Swal.fire("Error", error, "error");
@@ -117,15 +117,20 @@ export class UserdashboardComponent {
 }
 
 interface DashboardResponse {
-  totalBoughtPoints?: number;
-  totalLeftPoints?: number;
-  totalRequestedPoints?: number;
-  apiKeyLastGeneratedDateTime?: String;
-  whatsAppSessionDetail?: String;
-  whatsAppLastRegisteredDateTime?: String;
-  sent?: number;
-  failed?: number;
-  ratios: { [key: string]: string };
+  totalBoughtPoints? : number;
+  totalLeftPoints? : number;
+  totalRequestedPoints? : number;
+  apiKeyLastGeneratedDateTime? : String;
+  whatsAppSessionDetail? : String;
+  whatsAppLastRegisteredDateTime? : String;
+  FAILED?: number;
+  SENT?: number;
+  ratios: { [key: string]: string }; 
   totalMessages: number;
 }
 
+interface APIResponse {
+  message: string;
+  response: DashboardResponse;
+  code: number;
+}

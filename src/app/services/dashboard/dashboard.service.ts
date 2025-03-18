@@ -13,11 +13,11 @@ export class DashboardService {
    }
 
   getDashboardStatsUser(userId: String | null) {
-    return this.http.get<DashboardResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);
+    return this.http.get<APIResponse>(`${this.baseUrl}getUserDashboardData/${userId}`);
   }
 
   getDashboardStatsAdmin() {
-    return this.http.get<DashboardResponseAdmin>(`${this.baseUrl}getAdminDashboardData`);
+    return this.http.get<APIResponseAdmin>(`${this.baseUrl}getAdminDashboardData`);
   }
 
 }
@@ -44,4 +44,16 @@ interface DashboardResponseAdmin {
   totalNoOfMessages? : number;
   totalNoOfPointRequests? : number;
   ratios: { [key: string]: string }; 
+}
+
+interface APIResponse {
+  message: string;
+  response: DashboardResponse;
+  code: number;
+}
+
+interface APIResponseAdmin {
+  message: string;
+  response: DashboardResponseAdmin;
+  code: number;
 }

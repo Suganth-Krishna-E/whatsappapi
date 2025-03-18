@@ -44,18 +44,15 @@ export class CreateuserComponent {
     if (this.registerForm.valid) {
       this.subscriptions.push(
         this.userService.createUser(this.registerForm.value).subscribe(
-          (response) => {
-            Swal.fire("User created", response.message, "success");
-          },
-          (error) => {
-            if(error.status === 200) {
+          (response: APIResponse) => {
+            if(response.code === 200) {
               Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
               this.router.navigate(['../login'], { relativeTo: this.activatedRoute });
               this.registerForm.reset();
             }
-            else {
-              Swal.fire("User created", "User created successfully, Please login and enjoy", "success");
-            }
+          },
+          (error) => {
+            Swal.fire("Error!", error.message, "error");
           }
         )
       );
@@ -65,4 +62,10 @@ export class CreateuserComponent {
       Swal.fire("Error", "Details are incomplete please make all data align with constraints", "error");
     }
   }
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
 }

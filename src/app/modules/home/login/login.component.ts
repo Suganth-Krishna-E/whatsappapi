@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../../services/user/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { loginUserIdValidator } from '../../../validators/login-user-id.validator';
 import Swal from 'sweetalert2';
@@ -18,7 +17,6 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder, 
-    private userService: UserService, 
     private authService: AuthService,
     private loginUserIdValidator: loginUserIdValidator
   ) {

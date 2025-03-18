@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-getpoints',
@@ -65,26 +66,41 @@ export class GetpointsComponent {
 
     this.subscriptions.push(
       this.pointService.statusSubject.subscribe(newValue => {
-      this.checkPaymentStatus(newValue);
-    }));
+        this.checkPaymentStatus(newValue);
+      })
+    );
   }
 
 
   fetchRequests() {
     this.subscriptions.push(
       this.pointService.getTotalPagesCount(this.userId, this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response || 1;
+        (response: APIResponsePages) => {
+          if(response.code === 200) {
+            this.totalPages = response.response.pages || 1;
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
+        },
+        (error) => {
+          Swal.fire("Error!", error.message, "error");
         }
       )
     );
     this.subscriptions.push(
       this.pointService.getAllRequestsByUserId(this.userId, this.page, this.size).subscribe(
-        (response: any) => {
-          this.requests = response || [];
+        (response: APIResponsePointRequests) => {
+          if(response.code === 200) {
+            this.requests = response.response || [];
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         },
         (error) => {
           this.requests = [];
+          Swal.fire("Error!", error.message, "error");
         }
       )
     );
@@ -95,11 +111,16 @@ export class GetpointsComponent {
     this.underPayment = true;
     this.subscriptions.push(
       this.pointService.requestQr(this.pointsFormGroup.controls['point'].value).subscribe(
-        (response: QrCodeData) => {
-          this.paymentStatus = null;
-          this.qrCode = response.qr_code_url;
-          this.orderId = response.order_id;
-          this.pointService.setOrderId(this.orderId);
+        (response: APIResponseQrCodeData) => {
+          if(response.code === 200) {
+            this.paymentStatus = null;
+            this.qrCode = response.response.qr_code_url;
+            this.orderId = response.response.order_id;
+            this.pointService.setOrderId(this.orderId);
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         },
         (error) => {
           Swal.fire("Error", error.message, "error");
@@ -109,13 +130,23 @@ export class GetpointsComponent {
   }
 
   requestPoints() {
-    const result: String = this.pointService.requestPoints(this.pointsFormGroup.controls['point'].value);
-
-    if (result === "Request placed") {
-      Swal.fire("Success", "Payment requested, once approved by admin it will be added", "success");
-      this.clearPaymentData();
-      this.fetchRequests();
-    }
+    this.subscriptions.push(
+      this.pointService.requestPoints(this.pointsFormGroup.controls['point'].value).subscribe(
+        (response:  APIResponse) => {
+          if(response.code === 200) {
+            Swal.fire("Success", "Payment requested, once approved by admin it will be added", "success");
+            this.clearPaymentData();
+            this.fetchRequests();
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
+        },
+        (error) => {
+          Swal.fire("Error!", error.message, "error");
+        }
+      )
+    );
   }
 
   clearPaymentData() {
@@ -186,4 +217,28 @@ interface PointRequest {
   requestedOn: string;
   allocatedOn: string;
 
+}
+
+interface APIResponsePointRequests {
+  message: string;
+  response: PointRequest[];
+  code: number;
+}
+
+interface APIResponsePages {
+  message: string;
+  response: { pages: number };
+  code: number;
+}
+
+interface APIResponseQrCodeData {
+  message: string;
+  response: QrCodeData;
+  code: number;
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
 }

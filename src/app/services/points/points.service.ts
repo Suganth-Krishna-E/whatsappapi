@@ -50,33 +50,19 @@ export class PointsService {
 
 
   requestQr(points: Number) {
-    return this.http.post<QrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points });
+    return this.http.post<APIResponseQrCodeData>(`${this.baseUrl}addPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points });
   }
 
   getTotalPagesCount(userId: String | null, size: number) {
-    return this.http.get(`${this.pointRequestUrl}getPreviousRequestCount/${size}?userId=${userId}`);
+    return this.http.get<APIResponsePages>(`${this.pointRequestUrl}getPreviousRequestCount/${size}?userId=${userId}`);
   }
 
   getAllRequestsByUserId(userId: String | null, page: number, size: number): Observable<any> {
-    return this.http.get(`${this.pointRequestUrl}getRequestsByUserId/?userId=${userId}&page=${page}&size=${size}`);
+    return this.http.get<APIResponsePointRequests>(`${this.pointRequestUrl}getRequestsByUserId/?userId=${userId}&page=${page}&size=${size}`);
   }
 
-  requestPoints(points: number): String {
-    this.subscriptions.push(
-      this.http.post(`${this.pointRequestUrl}requestPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points }).subscribe(
-        (error: any) => {
-          if (error.status === 410) {
-            Swal.fire("Error", "User not available", "error");
-            return "User not avilable";
-          }
-          else {
-            Swal.fire("Error", error.message, "error");
-            return error.message;
-          }
-        }
-      )
-    );
-    return "Request placed";
+  requestPoints(points: number): Observable<any> {
+    return this.http.post<APIResponse>(`${this.pointRequestUrl}requestPoints`, { "userId": this.authService.getLoggedUserId(), "pointsRequested": points });
   }
 
   setOrderId(orderId: String | null) {
@@ -84,7 +70,7 @@ export class PointsService {
   }
 
   getPaymentStatus(orderId: String | null) {
-    return this.http.get(`${this.baseUrl}status/${orderId}`);
+    return this.http.get<APIResponse>(`${this.baseUrl}status/${orderId}`);
   }
 
   changeRequestStatus(pointRequestId: string, status: string, message: string) {
@@ -164,3 +150,26 @@ interface QrCodeData {
   qr_code_url: string;
 }
 
+interface APIResponseQrCodeData {
+  message: string;
+  response: QrCodeData;
+  code: number;
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
+}
+
+interface APIResponsePointRequests {
+  message: string;
+  response: PointRequest[];
+  code: number;
+}
+
+interface APIResponsePages {
+  message: string;
+  response: { pages: number };
+  code: number;
+}

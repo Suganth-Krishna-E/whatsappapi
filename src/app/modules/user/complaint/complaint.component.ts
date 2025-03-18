@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { ComplaintService } from '../../../services/complaint/complaint.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -53,23 +51,35 @@ export class ComplaintComponent {
   fetchComplaints() {
     this.subscriptions.push(
       this.complaintService.getTotalPagesCount(this.userId, this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response || 1;
+        (response: APIResponsePageNumber) => {
+          if(response.code === 200) {
+            this.totalPages = response.response.page;
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
+        },
+        (error) => {
+          Swal.fire("Error!", error.message, "error");
         }
       )
     );
     
     this.subscriptions.push(
       this.complaintService.getAllComplaintsByUserId(this.userId, this.page, this.size).subscribe(
-        (response: any) => {
-          this.complaints = response || []; 
+        (response: APIResponseComplaints) => {
+          if(response.code === 200) {
+            this.complaints = response.response;
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         },
         (error) => {
-          this.complaints = []; 
+          Swal.fire("Error!", error.message, "error");
         }
       )
     );
-    
   }
 
 
@@ -78,23 +88,22 @@ export class ComplaintComponent {
       this.complaintForm.controls['userId'].setValue(this.authService.getLoggedUserId());
       this.subscriptions.push(
         this.complaintService.registerComplaint(this.complaintForm.value).subscribe(
-          () => {
-            Swal.fire('Success', 'Complaint registered successfully!', 'success');
-            this.complaintForm.reset();
-            this.fetchComplaints(); 
-          },
-          (error) => {
-            if(error.status === 200) {
-              Swal.fire("Success", "Complaint registered sucessfully", "success");
+          (response: APIResponse) => {
+            if(response.code === 200) {
+              Swal.fire('Success', 'Complaint registered successfully!', 'success');
               this.complaintForm.reset();
               this.fetchComplaints(); 
             }
-            else if(error.status === 701) {
+            else if(response.code === 701) {
               Swal.fire("Failed", "The complaint data is invalid", "warning");
             }
             else {
-              Swal.fire('Error', 'Failed to register complaint', 'error');
+              Swal.fire("Error!", response.message, "error");
             }
+            
+          },
+          (error) => {
+            Swal.fire("Error!", error.message, "error");
           }
         )
       );
@@ -155,4 +164,23 @@ interface Complaint {
   adminId: string;
   registeredTimestamp: string;
   resolvedTimestamp: string;
+}
+
+
+interface APIResponsePageNumber {
+  message: string;
+  response: {page: number};
+  code: number;
+}
+
+interface APIResponseComplaints {
+  message: string;
+  response: Complaint[];
+  code: number;
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
 }

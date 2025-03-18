@@ -1,6 +1,6 @@
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Observable, of } from 'rxjs';
-import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { UserService } from '../services/user/user.service';
 
@@ -19,6 +19,7 @@ export class loginUserIdValidator {
                     debounceTime(5000),
                     switchMap(userId => 
                         this.userService.checkAdminIdAvailability(userId).pipe(
+                            // tap((response) => {console.log(response)}),
                             map(response =>  (response ? null : { userIdTaken: true })), 
                             catchError(() => of(null)) 
                         )
@@ -36,7 +37,8 @@ export class loginUserIdValidator {
                     debounceTime(5000),
                     switchMap(userId => 
                         this.userService.checkUserIdAvailability(userId).pipe(
-                            map(response =>  (response ? null : { userIdTaken: true })), 
+                            // tap((response) => {console.log(response)}),
+                            map(response => response.available ? null : { userIdTaken: true }),
                             catchError(() => of(null)) 
                         )
                     )
@@ -45,4 +47,10 @@ export class loginUserIdValidator {
         }
         
     }
+}
+
+interface APIResponse {
+    message: string;
+    response: {data: boolean};
+    code: number;
 }

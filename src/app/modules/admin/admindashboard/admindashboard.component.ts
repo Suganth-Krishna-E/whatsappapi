@@ -39,9 +39,9 @@ export class AdmindashboardComponent {
   getAllMessagesWithRatio() {
     this.subscriptions.push(
       this.dashboardService.getDashboardStatsAdmin().subscribe(
-        (response: DashboardResponse) => {
-          this.dashBoardResponse = response;
-          this.mapResponseToChart(response);
+        (response: APIResponse) => {
+          this.dashBoardResponse = response.response;
+          this.mapResponseToChart(response.response);
         },
         (error) => {
           Swal.fire("Error", error, "error");
@@ -116,3 +116,8 @@ interface DashboardResponse {
   ratios: { [key: string]: string };
 }
 
+interface APIResponse {
+  message: string;
+  response: DashboardResponse;
+  code: number;
+}

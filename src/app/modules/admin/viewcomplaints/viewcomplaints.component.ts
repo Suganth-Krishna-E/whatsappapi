@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { ComplaintService } from '../../../services/complaint/complaint.service';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { debounceTime, Subscription, switchMap } from 'rxjs';
-import { UserService } from '../../../services/user/user.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import e from 'express';
 
 
 @Component({
@@ -70,16 +68,16 @@ export class ViewcomplaintsComponent {
 
     this.subscriptions.push(
       this.complaintService.getTotalPagesCount(this.selectedUser, this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response || 1;
+        (response: APIResponsePageNumber) => {
+          this.totalPages = response.response.page;
         }
       )
     );
     
     this.subscriptions.push(
       this.complaintService.getAllComplaintsByUserId(this.selectedUser, this.page, this.size).subscribe(
-        (response: any) => {
-          this.complaints = response || [];
+        (response: APIResponseComplaints) => {
+          this.complaints = response.response;
         },
         (error) => {
           this.complaints = [];
@@ -93,23 +91,21 @@ export class ViewcomplaintsComponent {
       this.complaintResolveForm.controls['adminId'].setValue(this.authService.getLoggedUserId());
       this.subscriptions.push(
         this.complaintService.resolveComplaint(this.complaintResolveForm.value).subscribe(
-          () => {
-            Swal.fire('Success', 'Complaint resolved successfully!', 'success');
-            this.complaintResolveForm.reset();
-            this.userSearchControl.reset();
-          },
-          (error) => {
-            if (error.status === 200) {
-              Swal.fire("Success", "Complaint resolved sucessfully", "success");
+          (response: APIResponse) => {
+            if(response.code === 200) {
+              Swal.fire('Success', 'Complaint resolved successfully!', 'success');
               this.complaintResolveForm.reset();
               this.userSearchControl.reset();
             }
-            else if (error.status === 701) {
+            else if (response.code === 701) {
               Swal.fire("Failed", "The complaint data is invalid", "warning");
             }
             else {
-              Swal.fire('Error', 'Failed to register complaint', 'error');
+              Swal.fire("Error!", response.message, "error");
             }
+          },
+          (error) => {
+            Swal.fire('Error', error.message, 'error');
           }
         )
       );
@@ -186,4 +182,22 @@ interface Complaint {
   adminId: string;
   registeredTimestamp: string;
   resolvedTimestamp: string;
+}
+
+interface APIResponsePageNumber {
+  message: string;
+  response: {page: number};
+  code: number;
+}
+
+interface APIResponseComplaints {
+  message: string;
+  response: Complaint[];
+  code: number;
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
 }

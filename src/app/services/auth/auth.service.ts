@@ -26,41 +26,30 @@ export class AuthService {
 
   login(login: Login) {
     this.subscriptions.push(
-      this.http.post<any>(this.apiAddressHolder.userLoginUrl, login).subscribe(
-        (response) => {
-          Swal.fire("Login Successful", "Navigating to home page", "success");
-          const token = response.token;
-          this.loggedIn.next(true);
-          this.loggedInUserSubject.next(login.userId);
-          localStorage.setItem('token', token);
-          localStorage.setItem('userId', login.userId);
-          if (login.userType === "admin") {
-            this.router.navigate(['/admin']);
-          }
-          else {
-            this.router.navigate(['/user']);
-          }
-        },
-        (error) => {
-          if (error.status === 200) {
+      this.http.post<APIResponse>(this.apiAddressHolder.userLoginUrl, login).subscribe(
+        (response: APIResponse) => {
+          if (response.code === 200) {
             Swal.fire("Login Successful", "Navigating to home page", "success");
-            const token = error.token;
+            const token = response.response?.token;
             this.loggedIn.next(true);
             this.loggedInUserSubject.next(login.userId);
             localStorage.setItem('token', token);
             localStorage.setItem('userId', login.userId);
             if (login.userType === "admin") {
               this.router.navigate(['/admin']);
-              return;
             }
             else {
               this.router.navigate(['/user']);
-              return;
             }
           }
-          Swal.fire("Login Unsuccessful", "The entered password is wrong, Please verify", "error");
-          this.loggedIn.next(false);
-          this.router.navigate(["/login"]);
+          else {
+            Swal.fire("Error!", response.message, "error");
+            this.loggedIn.next(false);
+            this.router.navigate(["/login"]);
+          }
+        },
+        (error) => {
+          Swal.fire("Error", error.message, "error");
         }
       )
     );
@@ -85,6 +74,13 @@ export class AuthService {
 
   }
 
+  forceLogout() {
+    this.loggedIn.next(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    this.router.navigate(["/login"]);
+  }
+
   checkLoggedIn(): boolean {
     if (this.loggedIn.value === true) {
       return true;
@@ -98,7 +94,7 @@ export class AuthService {
   }
 
   getLoginStatus(): boolean {
-    if(this.loggedIn.value === true) {
+    if (this.loggedIn.value === true) {
       return true;
     }
     else {
@@ -130,7 +126,7 @@ export class AuthService {
 
     let tokenNotNull: string = "null";
 
-    if (token != null) {
+    if (token !== null) {
       tokenNotNull = token;
     }
 
@@ -148,3 +144,12 @@ interface Login {
   password: string;
 }
 
+interface APIResponse {
+  message: string;
+  response: tokenResponse;
+  code: number;
+}
+
+interface tokenResponse {
+  token: string;
+}

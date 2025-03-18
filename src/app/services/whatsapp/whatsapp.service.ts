@@ -63,12 +63,13 @@ export class WhatsappService {
 
     try {
       this.subscriptions.push(
-        this.http.post(this.apiUrl, { userId }, { headers }).subscribe(
-          (response: any) => {
-            Swal.fire("QR Code Generated", "Scan the QR code to log in.", "info");
-          },
-          error => {
-            if (error.status === 602) {
+        this.http.post<APIResponse>(this.apiUrl, { userId }, { headers }).subscribe(
+          (response: APIResponse) => {
+            if(response.code === 200) {
+              Swal.fire("Sucess", "Session saved to DB sucessfully", "success");
+              this.router.navigate(["user/dashboard"]);
+            }
+            else if(response.code === 602) {
               Swal.fire("Warning", "There is session available for the given userId.", "warning");
               Swal.fire({
                 title: 'Delete existing session?',
@@ -79,26 +80,25 @@ export class WhatsappService {
                 cancelButtonText: 'No, continue',
               }).then((result) => {
                 if (result.isConfirmed) {
-                  this.http.post(this.deleteSessionUrl, { userId }, { headers }).subscribe(
-                    (response: any) => {
-                      this.generateQR(userId);
+                  this.http.post<APIResponse>(this.deleteSessionUrl, { userId }, { headers }).subscribe(
+                    (response: APIResponse) => {
+                      if(response.code === 200) {
+                        this.generateQR(userId);
+                      }
+                      else {
+                        Swal.fire("Error!", response.message, "error");
+                      }                      
                     },
                     error => {
+                      Swal.fire("Error!", error.message, "error");
                     }
                   );
                 }
-              });
-            } 
-            else if (error.status === 200) {
-              Swal.fire("Sucess", "Session saved to DB sucessfully", "success");
-              this.router.navigate(["user/dashboard"]);
+              });              
             }
-            else if(error.status === 601) {
-              Swal.fire("Warning", "There is no session data found for the given userId", "warning");
-            }
-            else {
-              Swal.fire("Warning", error.message, "warning");
-            }
+          },
+          error => {
+            Swal.fire("Warning", error.message, "warning");
           }
         )
       );  
@@ -113,6 +113,7 @@ export class WhatsappService {
       const message = JSON.parse(data);
 
       if (message.type === "QR_CODE") {
+        Swal.fire("QR Code Generated", "Scan the QR code to log in.", "info");
         this.qrCodeSubject.next(message.qrCode);
       } else if (message.type === "REGISTRATION_SUCCESS") {
         this.statusSubject.next(message.message);
@@ -152,4 +153,10 @@ export class WhatsappService {
       this.socket = null;
     }
   }
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
 }

@@ -21,7 +21,7 @@ export class ApiAddressHolderService {
 
   generateWhatsAppSessionUrl = 'http://localhost:5004/api/whatsapp/generateQR';
 
-  deleteWhatsAppSessionUrl = 'http://localhost:5004/api/whatsapp/deleteSession';
+  deleteWhatsAppSessionUrl = 'http://localhost:5004/api/whatsapp/session/deleteSession';
 
   whatsAppKeyUrl = 'http://localhost:5004/api/whatsapp/key/';
 

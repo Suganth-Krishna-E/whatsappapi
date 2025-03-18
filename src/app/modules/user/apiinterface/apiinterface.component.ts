@@ -35,17 +35,16 @@ export class ApiinterfaceComponent {
   regenerateAPIKey() {
     this.subscriptions.push(
       this.apiKeyServie.regenerateApiKey(this.authService.getLoggedUserId()).subscribe(
-        (response) => {
-          if (response)
-            this.fetchKey();
-        },
-        (error) => {
-          if(error.status === 200) {
+        (response: APIResponse) => {
+          if(response.code === 200) {
             this.fetchKey();
           }
           else {
-            Swal.fire("Error", error.message, "error");
+            Swal.fire("Error!", response.message, "error");
           }
+        },
+        (error) => {
+          Swal.fire("Error", error.message, "error");
         }
       )
     );
@@ -54,21 +53,24 @@ export class ApiinterfaceComponent {
   fetchKey() {
     this.subscriptions.push(
       this.apiKeyServie.getCurrentApiKey(this.authService.getLoggedUserId()).subscribe(
-        (response: ApiKeyResponse) => {
-          Swal.fire("Success", "API Key fetched", "success");
-          this.apiKey = response.apiKey;
+        (response: APIResponse) => {
+          if(response.code === 200) {
+            Swal.fire("Success", "API Key fetched", "success");
+            this.apiKey = response.response.apiKey;
+          }
+          else if (response.code === 410) {
+            Swal.fire("Failed", "The user is not available in the backend", "warning");
+          } 
+          else if (response.code === 901) {
+            Swal.fire("No Key Found", "Please generate an API key first", "warning");
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
+          
         },
         (error) => {
-          if (error.status === 200) {
-            Swal.fire("Success", "API Key fetched", "success");
-            this.apiKey = error.error;
-          } else if (error.status === 410) {
-            Swal.fire("Failed", "The user is not available in the backend", "warning");
-          } else if (error.status === 901) {
-            Swal.fire("No Key Found", "Please generate an API key first", "warning");
-          } else {
-            Swal.fire("Error", error.message, "error");
-          }
+          Swal.fire("Error", error.message, "error");
         }
       )
     );
@@ -84,4 +86,10 @@ export class ApiinterfaceComponent {
 
 interface ApiKeyResponse {
   apiKey: String;
+}
+
+interface APIResponse {
+  message: string;
+  response: ApiKeyResponse;
+  code: number;
 }

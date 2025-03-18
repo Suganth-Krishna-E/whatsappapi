@@ -13,14 +13,20 @@ export class ApikeyService {
   }
 
   getCurrentApiKey(userId: String | null) {
-    return this.http.get<ApiKeyResponse>(`${this.baseUrl}getApiKey/${userId}`, { responseType: 'json'});
+    return this.http.get<APIResponse>(`${this.baseUrl}getApiKey/${userId}`, { responseType: 'json'});
   }
 
   regenerateApiKey(userId: String | null) {
-    return this.http.get(`${this.baseUrl}regenerateApiKey/${userId}`);
+    return this.http.get<APIResponse>(`${this.baseUrl}regenerateApiKey/${userId}`);
   }
 }
 
 interface ApiKeyResponse {
   apiKey: String;
+}
+
+interface APIResponse {
+  message: string;
+  response: ApiKeyResponse;
+  code: number;
 }

@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import Swal from 'sweetalert2';
 import { PointsService } from '../../../services/points/points.service';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Subscription } from 'rxjs';
-import { error } from 'console';
 
 @Component({
   selector: 'app-approvepoints',
@@ -44,42 +41,33 @@ export class ApprovepointsComponent {
   fetchRequests() {
     this.subscriptions.push(
       this.pointService.getTotalPagesCount(this.selectedUser.value, this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response;
-        },
-        (error) => {
-          if (error.status === 200) {
-            Swal.fire("Success", error.message, "success");
-          }
-          else if (error.status === 804) {
-            Swal.fire("No Complaints found", "No complaints found for the entered user", "warning");
+        (response: APIResponsePageCount) => {
+          if(response.code === 200) {
+            this.totalPages = response.response.pages;
           }
           else {
-            Swal.fire("Error", error.message, "error");
+            Swal.fire("Error", response.message, "error");
           }
+        },
+        (error) => {
+          Swal.fire("Error", error.message, "error");
         }
       )
     );
 
     this.subscriptions.push(
       this.pointService.getAllRequestsByUserId(this.selectedUser.value, this.page, this.size).subscribe(
-        (response: any) => {
-          this.requests = response;
-        },
-        (error) => {
-          if (error.status === 413) {
-            Swal.fire("Error", "JWT token mismatch");
-          }
-          else if (error.status === 414) {
-            Swal.fire("Session expired", "The session or JWT token is expired. Please login again", "warning");
-            this.authService.logout();
-          }
-          else if(error.status === 804) {
-            Swal.fire("No Requests", "No point requests found for selected user", "warning");
+        (response: APIResponsePointRequests) => {
+          if(response.code === 200) {
+            this.requests = response.response;
           }
           else {
-            console.log(error);
+            Swal.fire("Error", response.message, "error");
           }
+          
+        },
+        (error) => {
+          Swal.fire("Error", error.message, "error");
         }
       )
     );
@@ -158,4 +146,20 @@ interface PointRequest {
   allocatedBy: string;
   requestedOn: string;
   allocatedOn: string;
+}
+
+interface APIResponsePageCount {
+  message: string;
+  response: pageNumberCount;
+  code: number;
+}
+
+interface APIResponsePointRequests {
+  message: string;
+  response: PointRequest[];
+  code: number;
+}
+
+interface pageNumberCount {
+  pages: number;
 }

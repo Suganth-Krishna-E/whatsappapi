@@ -35,19 +35,30 @@ export class UsagesComponent {
   fetchMessages() {
     this.subscriptions.push(
       this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response || 1;
+        (response: APIResponsePageCount) => {
+          if(response.code === 200) {
+            this.totalPages = response.response.page || 1;
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         }
       )
     );
     
     this.subscriptions.push(
       this.messageService.getMessagesByUser(this.userId, this.page, this.size).subscribe(
-        (response: any) => {
-          this.messages = response || []; 
+        (response: APIResponse) => {
+          if(response.code === 200) {
+            this.messages = response.response || [];  
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         },
         (error) => {
           this.messages = []; 
+          Swal.fire("Error!", error.message, "error");
         }
       )
     );
@@ -95,4 +106,17 @@ interface Message {
   status: string;
   statusMessage: string;
   timestamp: string;
+}
+
+
+interface APIResponse {
+  message: string;
+  response: Message[];
+  code: number;
+}
+
+interface APIResponsePageCount {
+  message: string;
+  response: {page: number};
+  code: number;
 }

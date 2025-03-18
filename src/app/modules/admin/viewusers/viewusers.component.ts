@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
 import { UserService } from '../../../services/user/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -39,19 +38,27 @@ export class ViewusersComponent {
   fetchUsers() {
     this.subscriptions.push(
       this.userService.getTotalPagesCount(this.size).subscribe(
-        (response: any) => {
-          this.totalPages = response || 1;
+        (response: APIResponsePageCount) => {
+          if(response.code === 200) {
+            this.totalPages = response.response.page;
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
+          
         }
       )
     );
     
     this.subscriptions.push(
       this.userService.getAllUsers(this.page, this.size).subscribe(
-        (response: any) => {
-          this.users = response || []; 
-        },
-        () => {
-          this.users = []; 
+        (response: APIResponseUserList) => {
+          if(response.code === 200) {
+            this.users = response.response; 
+          }
+          else {
+            Swal.fire("Error!", response.message, "error");
+          }
         }
       )
     );
@@ -102,4 +109,22 @@ interface User {
   address: string;
   points: number;
   createdAt: string;
+}
+
+interface APIResponse {
+  message: string;
+  response: object;
+  code: number;
+}
+
+interface APIResponseUserList {
+  message: string;
+  response: User[];
+  code: number;
+}
+
+interface APIResponsePageCount {
+  message: string;
+  response: {page: number};
+  code: number;
 }

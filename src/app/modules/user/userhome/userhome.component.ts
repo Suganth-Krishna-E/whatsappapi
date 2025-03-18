@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
-import Swal from 'sweetalert2';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
