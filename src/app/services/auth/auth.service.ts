@@ -109,6 +109,11 @@ export class AuthService {
   }
 
   autoLogin() {
+    console.log(localStorage);
+    // if(localStorage === undefined) {
+    //   this.loggedIn.next(false);
+    //   return;
+    // }
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 

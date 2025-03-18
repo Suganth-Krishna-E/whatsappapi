@@ -53,7 +53,7 @@ export class ComplaintComponent {
       this.complaintService.getTotalPagesCount(this.userId, this.size).subscribe(
         (response: APIResponsePageNumber) => {
           if(response.code === 200) {
-            this.totalPages = response.response.page;
+            this.totalPages = response.response;
           }
           else {
             Swal.fire("Error!", response.message, "error");
@@ -169,7 +169,7 @@ interface Complaint {
 
 interface APIResponsePageNumber {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }
 

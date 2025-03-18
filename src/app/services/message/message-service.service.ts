@@ -29,7 +29,7 @@ interface APIResponse {
 
 interface APIResponsePageCount {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }
 

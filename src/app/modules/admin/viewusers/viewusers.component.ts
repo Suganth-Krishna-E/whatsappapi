@@ -40,7 +40,7 @@ export class ViewusersComponent {
       this.userService.getTotalPagesCount(this.size).subscribe(
         (response: APIResponsePageCount) => {
           if(response.code === 200) {
-            this.totalPages = response.response.page;
+            this.totalPages = response.response;
           }
           else {
             Swal.fire("Error!", response.message, "error");
@@ -125,6 +125,6 @@ interface APIResponseUserList {
 
 interface APIResponsePageCount {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }

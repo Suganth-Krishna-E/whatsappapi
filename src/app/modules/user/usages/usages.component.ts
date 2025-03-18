@@ -37,7 +37,7 @@ export class UsagesComponent {
       this.messageService.getTotalPagesCount(this.userId, this.size).subscribe(
         (response: APIResponsePageCount) => {
           if(response.code === 200) {
-            this.totalPages = response.response.page || 1;
+            this.totalPages = response.response || 1;
           }
           else {
             Swal.fire("Error!", response.message, "error");
@@ -117,6 +117,6 @@ interface APIResponse {
 
 interface APIResponsePageCount {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }

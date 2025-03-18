@@ -13,7 +13,7 @@ export class WhatsappService {
   private qrCodeSubject = new BehaviorSubject<string | null>(null);
   private statusSubject = new BehaviorSubject<string | null>(null);
   private reconnectAttempts = 0;
-  private readonly maxReconnectAttempts = 0;
+  private readonly maxReconnectAttempts = 1;
   subscriptions: Subscription[] = [];
 
   private wsUrl; 

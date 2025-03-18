@@ -59,7 +59,7 @@
 
 
 <div>
-    <div *ngIf="complaints.length > 0 && viewSelector === 'view'" class="complaints-container">
+    <div *ngIf="complaints && complaints.length > 0 && viewSelector === 'view'" class="complaints-container">
         <table>
             <thead>
                 <tr>

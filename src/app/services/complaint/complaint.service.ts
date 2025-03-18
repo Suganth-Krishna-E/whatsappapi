@@ -46,7 +46,7 @@ interface APIResponse {
 
 interface APIResponsePageNumber {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }
 

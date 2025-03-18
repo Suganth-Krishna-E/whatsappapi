@@ -77,7 +77,7 @@ export class GetpointsComponent {
       this.pointService.getTotalPagesCount(this.userId, this.size).subscribe(
         (response: APIResponsePages) => {
           if(response.code === 200) {
-            this.totalPages = response.response.pages || 1;
+            this.totalPages = response.response || 1;
           }
           else {
             Swal.fire("Error!", response.message, "error");
@@ -227,7 +227,7 @@ interface APIResponsePointRequests {
 
 interface APIResponsePages {
   message: string;
-  response: { pages: number };
+  response: number;
   code: number;
 }
 

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoggeduserService } from '../loggeduser/loggeduser.service';
 import Swal from 'sweetalert2';
@@ -17,7 +17,7 @@ export class PointsService {
   private pointRequestUrl: string;
   private wsUrl: string;
   private reconnectAttempts = 0;
-  private readonly maxReconnectAttempts = 0;
+  private readonly maxReconnectAttempts = 1;
   subscriptions: Subscription[] = [];
 
 
@@ -170,6 +170,6 @@ interface APIResponsePointRequests {
 
 interface APIResponsePages {
   message: string;
-  response: { pages: number };
+  response: number;
   code: number;
 }

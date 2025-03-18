@@ -69,7 +69,7 @@ export class ViewcomplaintsComponent {
     this.subscriptions.push(
       this.complaintService.getTotalPagesCount(this.selectedUser, this.size).subscribe(
         (response: APIResponsePageNumber) => {
-          this.totalPages = response.response.page;
+          this.totalPages = response.response;
         }
       )
     );
@@ -186,7 +186,7 @@ interface Complaint {
 
 interface APIResponsePageNumber {
   message: string;
-  response: {page: number};
+  response: number;
   code: number;
 }
 
