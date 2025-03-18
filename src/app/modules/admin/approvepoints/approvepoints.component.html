@@ -1,6 +1,7 @@
 <div class="user-name-selector">
     <label for="user-selector">Select user by ID</label>
     <input id="user-selector" type="text" [formControl]="selectedUser" />
+    <button type="button" id="search-requests" (click)="this.fetchRequests()">Search Requests</button>
 </div>
 
 
@@ -29,8 +30,8 @@
                 <td>{{ request?.message }}</td>
                 <td>{{ request?.allocatedBy }}</td>
                 <td>{{ formatTime(request.allocatedOn) }}</td>
-                <td [hidden]="request.status === 'APPROVED'" class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
-                <td class="reject-data" (click)="changePointRequestState(request, 'reject')">Reject</td>
+                <td [hidden]="request.status === 'APPROVED' || request.status === 'REJECTED'" class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
+                <td [hidden]="request.status === 'APPROVED' || request.status === 'REJECTED'" class="reject-data" (click)="changePointRequestState(request, 'reject')">Reject</td>
             </tr>
         </tbody>
     </table>

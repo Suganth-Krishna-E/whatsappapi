@@ -40,8 +40,12 @@ export class ApiinterfaceComponent {
             this.fetchKey();
         },
         (error) => {
-          Swal.fire("Error", error, "error");
-          this.fetchKey();
+          if(error.status === 200) {
+            this.fetchKey();
+          }
+          else {
+            Swal.fire("Error", error.message, "error");
+          }
         }
       )
     );

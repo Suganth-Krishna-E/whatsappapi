@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private baseUserUrl = "http://localhost:5004/api/whatsapp/user/"
+  private baseUserUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private apiAddressHolder: ApiAddressHolderService) {
+    this.baseUserUrl = this.apiAddressHolder.whatsAppUrl;
+  }
 
   searchUsers(searchText: string): Observable<any[]> {
     return this.http.get<String[]>(`${this.baseUserUrl}search?query=${searchText}`);

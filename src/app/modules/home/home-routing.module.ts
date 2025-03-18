@@ -17,7 +17,7 @@ const routes: Routes = [
   {
     path: 'createuser',
     component: CreateuserComponent
-  }
+  },
 ];
 
 @NgModule({
