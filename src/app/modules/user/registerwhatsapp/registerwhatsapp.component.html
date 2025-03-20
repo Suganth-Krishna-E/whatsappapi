@@ -2,7 +2,7 @@
   <h2>Register WhatsApp</h2>
 
   <form [formGroup]="formGroup">
-    <button type="button" (click)="generateQR()">Generate QR Code</button>
+    <button type="button" (click)="generateQR()" [disabled]="isButtonClickedInTime" [ngClass]="isButtonClickedInTime? 'button-disabled' : 'button-normal' ">Generate QR Code</button>
     
     <div class="qr-container" *ngIf="formGroup.controls['qrCode'].value">
       <h3>Scan the QR Code</h3>

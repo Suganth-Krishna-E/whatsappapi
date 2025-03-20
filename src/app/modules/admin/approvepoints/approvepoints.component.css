@@ -143,17 +143,19 @@ th {
 }
 
 .approve-data {
-    background-color: green;
-    border-radius: 1rem;
-    color: #f5efef;
+    cursor: pointer;
+    color: green;
     margin: 1rem;
     text-align: center;
 }
 
 .reject-data {
-    background-color: red;
-    color: #f5efef;
-    border-radius: 1rem;
+    cursor: pointer;
+    color: red;
     margin: 1rem;
     text-align: center;
+}
+
+.disabled-button {
+    cursor: not-allowed;
 }

@@ -30,8 +30,8 @@
                 <td>{{ request?.message }}</td>
                 <td>{{ request?.allocatedBy }}</td>
                 <td>{{ formatTime(request.allocatedOn) }}</td>
-                <td [hidden]="request.status === 'APPROVED' || request.status === 'REJECTED'" class="approve-data" (click)="changePointRequestState(request, 'approve')">Approve</td>
-                <td [hidden]="request.status === 'APPROVED' || request.status === 'REJECTED'" class="reject-data" (click)="changePointRequestState(request, 'reject')">Reject</td>
+                <td [ngClass]="request.status === 'APPROVED' || request.status === 'REJECTED'? 'approve-data disabled-button' : 'approve-data'" (click)="changePointRequestState(request, 'approve')">Approve</td>
+                <td [ngClass]="request.status === 'APPROVED' || request.status === 'REJECTED'? 'reject-data disabled-button' : 'reject-data'" (click)="changePointRequestState(request, 'reject')">Reject</td>
             </tr>
         </tbody>
     </table>

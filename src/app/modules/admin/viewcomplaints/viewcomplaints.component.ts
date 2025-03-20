@@ -33,13 +33,13 @@ export class ViewcomplaintsComponent {
     private fb: FormBuilder,
   ) {
     this.complaintResolveForm = this.fb.group({
-      id: [''],
-      userId: [''],
-      userName: [''],
-      category: [''],
-      message: [''],
+      id: ['', [Validators.required]],
+      userId: ['', [Validators.required]],
+      userName: ['', [Validators.required]],
+      category: ['', [Validators.required]],
+      message: ['', [Validators.required]],
       adminMessage: ['', Validators.required],
-      status: [''],
+      status: ['', [Validators.required]],
       adminId: [this.authService.getLoggedUserId()]
     });
     this.viewSelector = "resolve";
@@ -109,7 +109,9 @@ export class ViewcomplaintsComponent {
           }
         )
       );
-      
+    }
+    else {
+      Swal.fire("Invalid data", "Please fill all the data to submit the complaint", "warning");
     }
   }
 

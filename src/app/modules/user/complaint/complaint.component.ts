@@ -108,6 +108,9 @@ export class ComplaintComponent {
         )
       );
     }
+    else {
+      Swal.fire("Fill the data", "The complaint data is invalid", "warning");
+    }
   }
 
 

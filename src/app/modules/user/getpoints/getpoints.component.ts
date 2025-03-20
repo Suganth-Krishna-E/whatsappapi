@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PointsService } from '../../../services/points/points.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoggeduserService } from '../../../services/loggeduser/loggeduser.service';
@@ -32,7 +32,7 @@ export class GetpointsComponent {
     private authService: AuthService,
   ) {
     this.pointsFormGroup = new FormGroup({
-      point: new FormControl(),
+      point: new FormControl('', [Validators.required, Validators.min(100)]),
       paymenttype: new FormControl('upi')
     });
 
@@ -107,6 +107,11 @@ export class GetpointsComponent {
   }
 
   requestQr() {
+    console.log(this.pointsFormGroup);
+    if(!this.pointsFormGroup.valid) {
+      Swal.fire("Fill the data", "Points must not be empty or lesser than 100", "warning");
+      return;
+    }
     this.paymentStatus = "Creating QR";
     this.underPayment = true;
     this.subscriptions.push(
@@ -130,6 +135,10 @@ export class GetpointsComponent {
   }
 
   requestPoints() {
+    if(!this.pointsFormGroup.valid) {
+      Swal.fire("Fill the data", "Points must not be empty or lesser than 100", "warning");
+      return;
+    }
     this.subscriptions.push(
       this.pointService.requestPoints(this.pointsFormGroup.controls['point'].value).subscribe(
         (response:  APIResponse) => {

@@ -75,7 +75,7 @@ export class ApprovepointsComponent {
   }
 
   changePointRequestState(request: PointRequest, status: string) {
-    if (request.status === "APPROVED") {
+    if (request.status === "APPROVED" || request.status === "REJECTED") {
       Swal.fire("No changes allowed", "There is no permission to change already approved requests", "warning");
       return;
     }
