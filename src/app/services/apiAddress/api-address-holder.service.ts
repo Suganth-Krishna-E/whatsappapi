@@ -1,37 +1,40 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiAddressHolderService {
 
-  userLoginUrl = 'http://localhost:5004/api/whatsapp/user/login';
+  baseUrl = environment.baseUrl;
+
+  userLoginUrl = this.baseUrl + 'user/login';
   
-  complaintUrl = 'http://localhost:5004/api/whatsapp/complaint/';
+  complaintUrl = this.baseUrl + 'complaint/';
 
-  pointsUrl = 'http://localhost:5004/api/whatsapp/points/';
+  pointsUrl = this.baseUrl + 'points/';
 
-  pointRequestUrl = 'http://localhost:5004/api/whatsapp/pointrequest/';
+  pointRequestUrl = this.baseUrl + 'pointrequest/';
 
-  paymentWebSocketUrl = 'ws://localhost:5007';
+  paymentWebSocketUrl = environment.paymentWebSocketUrl;
 
-  whatsAppUrl = 'http://localhost:5004/api/whatsapp/user/';
+  whatsAppUrl = this.baseUrl + 'user/';
 
-  whatsAppSessionWebSocketUrl = 'ws://localhost:5005';
+  whatsAppSessionWebSocketUrl = environment.whatsAppSessionWebSocketUrl;
 
-  generateWhatsAppSessionUrl = 'http://localhost:5004/api/whatsapp/session/generateQR';
+  generateWhatsAppSessionUrl = this.baseUrl + 'session/generateQR';
 
-  deleteWhatsAppSessionUrl = 'http://localhost:5004/api/whatsapp/session/deleteSession';
+  deleteWhatsAppSessionUrl = this.baseUrl + 'session/deleteSession';
 
-  whatsAppKeyUrl = 'http://localhost:5004/api/whatsapp/key/';
+  whatsAppKeyUrl = this.baseUrl + 'key/';
 
-  dashboardUrl = 'http://localhost:5004/api/whatsapp/dashboard/';
+  dashboardUrl = this.baseUrl + 'dashboard/';
 
-  getAllMessagesByUserIdUrl = 'http://localhost:5004/api/whatsapp/message/getAllMessagesByUserId';
+  getAllMessagesByUserIdUrl = this.baseUrl + 'message/getAllMessagesByUserId';
 
-  getTotalMessagesCountUrl = 'http://localhost:5004/api/whatsapp/message/getTotalPageCount';
+  getTotalMessagesCountUrl = this.baseUrl + 'message/getTotalPageCount';
 
-  verifyJWTTokenUrl = 'http://localhost:5004/api/whatsapp/jwtutils/verifyJwt';
+  verifyJWTTokenUrl = this.baseUrl + 'jwtutils/verifyJwt';
 
   constructor() { }
 

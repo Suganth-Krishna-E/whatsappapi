@@ -111,12 +111,17 @@ export class AuthService {
   }
 
   autoLogin() {
-    if(typeof localStorage === undefined) {
+    if(localStorage === undefined) {
       this.loggedIn.next(false);
       return;
     }
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+
+    if(token === undefined || token === null || userId === undefined || userId === null) {
+      this.loggedIn.next(false);
+      return;
+    }
 
     this.subscriptions.push(
       this.http.get<APIResponse>(this.apiAddressHolder.verifyJWTTokenUrl).subscribe(
@@ -127,7 +132,7 @@ export class AuthService {
           }
         },
         (error) => {
-          Swal.fire("JWT Error", "The JWT token verification failes", "error");
+          Swal.fire("JWT Error", "The JWT token verification failed", "error");
         }
       )
     );
