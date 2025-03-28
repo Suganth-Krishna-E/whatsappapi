@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ApiAddressHolderService } from '../apiAddress/api-address-holder.service';
+import { response } from 'express';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
@@ -115,6 +117,20 @@ export class AuthService {
     }
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+
+    this.subscriptions.push(
+      this.http.get<APIResponse>(this.apiAddressHolder.verifyJWTTokenUrl).subscribe(
+        (response) => {
+          if(response.code === 414) {
+            this.loggedIn.next(false);
+            return;
+          }
+        },
+        (error) => {
+          Swal.fire("JWT Error", "The JWT token verification failes", "error");
+        }
+      )
+    );
 
     if (token && userId) {
       this.loggedInUserSubject.next(userId);

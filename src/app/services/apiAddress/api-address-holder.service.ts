@@ -31,6 +31,8 @@ export class ApiAddressHolderService {
 
   getTotalMessagesCountUrl = 'http://localhost:5004/api/whatsapp/message/getTotalPageCount';
 
+  verifyJWTTokenUrl = 'http://localhost:5004/api/whatsapp/jwtutils/verifyJwt';
+
   constructor() { }
 
 
